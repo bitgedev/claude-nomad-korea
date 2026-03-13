@@ -16,15 +16,18 @@ export function SearchInput() {
     <div className="flex flex-col gap-4 w-full max-w-2xl">
       <div className="flex gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#6B6B6B]" />
           <Input
             placeholder="도시명 또는 지역을 검색하세요..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="pl-10 h-12 bg-background/90 backdrop-blur-sm text-base"
+            className="pl-10 h-12 bg-white/90 backdrop-blur-sm text-base rounded-full border-[#1B9AAA]/25 focus:border-[#1B9AAA] focus:ring-[#1B9AAA]/20"
           />
         </div>
-        <Button size="lg" className="h-12 px-6">
+        <Button
+          size="lg"
+          className="h-12 px-6 rounded-full bg-[#1B9AAA] hover:bg-[#1B9AAA]/90 text-white"
+        >
           검색
         </Button>
       </div>
@@ -34,7 +37,11 @@ export function SearchInput() {
           <Badge
             key={filter}
             variant={activeFilter === filter ? "default" : "outline"}
-            className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors px-3 py-1"
+            className={`cursor-pointer px-3 py-1 rounded-full transition-colors ${
+              activeFilter === filter
+                ? "bg-[#1B9AAA] text-white border-[#1B9AAA] hover:bg-[#1B9AAA]/90"
+                : "border-[#1B9AAA]/30 text-[#1B9AAA] hover:bg-[#1B9AAA]/10 hover:text-[#1B9AAA]"
+            }`}
             onClick={() => setActiveFilter(filter)}
           >
             {filter}

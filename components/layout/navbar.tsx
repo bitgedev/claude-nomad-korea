@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import {
@@ -31,15 +31,15 @@ export function Navbar() {
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-200 ${
         scrolled
-          ? "bg-background/80 backdrop-blur-md border-b border-border shadow-sm"
+          ? "bg-[#FAF7F2]/90 backdrop-blur-md border-b border-[#1B9AAA]/20 shadow-sm"
           : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
         {/* Logo */}
         <a href="#" className="flex items-center gap-2 font-bold text-xl tracking-tight">
-          <span>🇰🇷</span>
-          <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          <span>🌿</span>
+          <span className="bg-gradient-to-r from-[#1B9AAA] to-[#2D6A4F] bg-clip-text text-transparent">
             NOMAD KOREA
           </span>
         </a>
@@ -50,7 +50,7 @@ export function Navbar() {
             <a
               key={link.label}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="text-sm font-medium text-[#6B6B6B] hover:text-[#1B9AAA] transition-colors"
             >
               {link.label}
             </a>
@@ -60,8 +60,11 @@ export function Navbar() {
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-2">
           <ThemeToggle />
-          <Button size="sm" className="gap-1">
-            가입하기 <span>→</span>
+          <Button
+            size="sm"
+            className="gap-1 bg-[#1B9AAA] hover:bg-[#1B9AAA]/90 text-white rounded-full px-5"
+          >
+            가입하기 →
           </Button>
         </div>
 
@@ -70,15 +73,15 @@ export function Navbar() {
           <ThemeToggle />
           <Sheet>
             <SheetTrigger>
-              <span className="inline-flex items-center justify-center h-9 w-9 rounded-md hover:bg-accent transition-colors" aria-label="메뉴 열기">
-                <Menu className="h-5 w-5" />
+              <span className="inline-flex items-center justify-center h-9 w-9 rounded-full hover:bg-[#1B9AAA]/10 transition-colors" aria-label="메뉴 열기">
+                <Menu className="h-5 w-5 text-[#4A4A4A]" />
               </span>
             </SheetTrigger>
-            <SheetContent side="right" className="w-72">
+            <SheetContent side="right" className="w-72 bg-[#FAF7F2]">
               <div className="flex flex-col gap-6 pt-6">
                 <a href="#" className="flex items-center gap-2 font-bold text-lg">
-                  <span>🇰🇷</span>
-                  <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                  <span>🌿</span>
+                  <span className="bg-gradient-to-r from-[#1B9AAA] to-[#2D6A4F] bg-clip-text text-transparent">
                     NOMAD KOREA
                   </span>
                 </a>
@@ -87,15 +90,15 @@ export function Navbar() {
                     <SheetClose key={link.label}>
                       <a
                         href={link.href}
-                        className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors"
+                        className="text-base font-medium text-[#6B6B6B] hover:text-[#1B9AAA] transition-colors"
                       >
                         {link.label}
                       </a>
                     </SheetClose>
                   ))}
                 </nav>
-                <Button className="w-full gap-1">
-                  가입하기 <span>→</span>
+                <Button className="w-full gap-1 bg-[#1B9AAA] hover:bg-[#1B9AAA]/90 text-white rounded-full">
+                  가입하기 →
                 </Button>
               </div>
             </SheetContent>
