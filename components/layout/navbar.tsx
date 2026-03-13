@@ -62,9 +62,18 @@ export function Navbar() {
           <ThemeToggle />
           <Button
             size="sm"
-            className="gap-1 bg-[#1B9AAA] hover:bg-[#1B9AAA]/90 text-white rounded-full px-5"
+            variant="outline"
+            className="rounded-full border-[#1B9AAA] text-[#1B9AAA] hover:bg-[#1B9AAA]/10"
+            asChild
           >
-            가입하기 →
+            <a href="/login">로그인</a>
+          </Button>
+          <Button
+            size="sm"
+            className="gap-1 bg-[#1B9AAA] hover:bg-[#1B9AAA]/90 text-white rounded-full px-5"
+            asChild
+          >
+            <a href="/signup">가입하기 →</a>
           </Button>
         </div>
 
@@ -97,9 +106,21 @@ export function Navbar() {
                     </SheetClose>
                   ))}
                 </nav>
-                <Button className="w-full gap-1 bg-[#1B9AAA] hover:bg-[#1B9AAA]/90 text-white rounded-full">
-                  가입하기 →
-                </Button>
+                <div className="flex flex-col gap-2">
+                  <Button
+                    variant="outline"
+                    className="w-full rounded-full border-[#1B9AAA] text-[#1B9AAA] hover:bg-[#1B9AAA]/10"
+                    asChild
+                  >
+                    <a href="/login">로그인</a>
+                  </Button>
+                  <Button
+                    className="w-full bg-[#1B9AAA] hover:bg-[#1B9AAA]/90 text-white rounded-full"
+                    asChild
+                  >
+                    <a href="/signup">가입하기 →</a>
+                  </Button>
+                </div>
               </div>
             </SheetContent>
           </Sheet>
