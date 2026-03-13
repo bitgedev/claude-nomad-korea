@@ -60,8 +60,11 @@ export function Navbar() {
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-2">
           <ThemeToggle />
-          <Button size="sm" className="gap-1">
-            가입하기 <span>→</span>
+          <Button size="sm" variant="outline" asChild>
+            <a href="/login">로그인</a>
+          </Button>
+          <Button size="sm" className="gap-1" asChild>
+            <a href="/signup">가입하기 <span>→</span></a>
           </Button>
         </div>
 
@@ -94,9 +97,14 @@ export function Navbar() {
                     </SheetClose>
                   ))}
                 </nav>
-                <Button className="w-full gap-1">
-                  가입하기 <span>→</span>
-                </Button>
+                <div className="flex flex-col gap-2">
+                  <Button variant="outline" className="w-full" asChild>
+                    <a href="/login">로그인</a>
+                  </Button>
+                  <Button className="w-full gap-1" asChild>
+                    <a href="/signup">가입하기 <span>→</span></a>
+                  </Button>
+                </div>
               </div>
             </SheetContent>
           </Sheet>
