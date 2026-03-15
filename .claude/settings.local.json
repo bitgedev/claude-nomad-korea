@@ -6,7 +6,14 @@
       "Bash(npm run:*)",
       "Bash(pkill -f \"next dev\" 2>/dev/null; echo \"stopped\")",
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git worktree:*)",
+      "Bash(pkill -f \"next dev\" && echo \"done\")",
+      "WebFetch(domain:supabase.com)",
+      "Bash(cd /Users/munbichgo-eun/Desktop/claude-nomad-korea && npm install @supabase/supabase-js @supabase/ssr 2>&1 | tail -5)",
+      "Bash(gh auth:*)",
+      "Bash(gh repo:*)"
     ]
   }
 }
