@@ -215,7 +215,7 @@ Nomad Korea의 핵심 콘텐츠인 도시 정보를 본격적으로 제공하는
 
 ---
 
-## - [ ] Phase 5: 모의 인증 흐름 및 프로필 페이지
+## - [x] Phase 5: 모의 인증 흐름 및 프로필 페이지
 
 ### 오버뷰
 
@@ -226,43 +226,43 @@ Nomad Korea의 핵심 콘텐츠인 도시 정보를 본격적으로 제공하는
 ### 수정/개선 사항
 
 **Mock 인증 컨텍스트** (`providers/auth-provider.tsx`)
-- [ ] `AuthContext` 생성: `user: MockUser | null`, `login(email, password)`, `signup(email, password, nickname)`, `logout()`
-- [ ] `MockUser` 타입: `{ id, email, nickname, joinedAt, favoriteCity? }`
-- [ ] `login()`: 이메일/비밀번호 형식 검증 후 Mock 유저 객체 생성, `localStorage`에 저장
-- [ ] `signup()`: 닉네임 중복 체크(mock 리스트 기반), 성공 시 유저 생성
-- [ ] 페이지 새로고침 시 `localStorage`에서 유저 복원
-- [ ] `app/layout.tsx`에 `AuthProvider` 추가
+- [x] `AuthContext` 생성: `user: MockUser | null`, `login(email, password)`, `signup(email, password, nickname)`, `logout()`
+- [x] `MockUser` 타입: `{ id, email, nickname, joinedAt, favoriteCity? }`
+- [x] `login()`: 이메일/비밀번호 형식 검증 후 Mock 유저 객체 생성, `localStorage`에 저장
+- [x] `signup()`: 닉네임 중복 체크(mock 리스트 기반), 성공 시 유저 생성
+- [x] 페이지 새로고침 시 `localStorage`에서 유저 복원
+- [x] `app/layout.tsx`에 `AuthProvider` 추가
 
 **로그인 페이지 개선** (`app/login/page.tsx`)
-- [ ] Supabase 클라이언트 제거 → `useAuth()` hook 사용
-- [ ] 로그인 성공 시 홈으로 리다이렉트
-- [ ] 디자인 개선: Nomad Korea 브랜드 스타일 적용
-- [ ] 소셜 로그인 버튼 UI만 추가 (Google, GitHub) — 클릭 시 "준비 중입니다" 토스트
+- [x] Supabase 클라이언트 제거 → `useAuth()` hook 사용
+- [x] 로그인 성공 시 홈으로 리다이렉트
+- [x] 디자인 개선: Nomad Korea 브랜드 스타일 적용
+- [x] 소셜 로그인 버튼 UI만 추가 (Google, GitHub) — 클릭 시 "준비 중입니다" 토스트
 
 **회원가입 페이지 개선** (`app/signup/page.tsx`)
-- [ ] Supabase 제거 → `useAuth()` 사용
-- [ ] 닉네임 필드 추가
-- [ ] 비밀번호 확인 필드 추가
-- [ ] 디자인 브랜딩 적용
+- [x] Supabase 제거 → `useAuth()` 사용
+- [x] 닉네임 필드 추가
+- [x] 비밀번호 확인 필드 추가
+- [x] 디자인 브랜딩 적용
 
 **Navbar 로그인 상태 반영** (`components/layout/navbar.tsx`)
-- [ ] 비로그인: "로그인" + "가입하기" 버튼 (현재와 동일)
-- [ ] 로그인 상태: 아바타 아이콘 + 닉네임 + 드롭다운 메뉴 (`프로필`, `로그아웃`)
+- [x] 비로그인: "로그인" + "가입하기" 버튼 (현재와 동일)
+- [x] 로그인 상태: 아바타 아이콘 + 닉네임 + 드롭다운 메뉴 (`프로필`, `로그아웃`)
 
 **프로필 페이지** (`app/profile/page.tsx`)
-- [ ] 비로그인 접근 시 `/login`으로 리다이렉트
-- [ ] 프로필 카드: 닉네임, 이메일, 가입일, 관심 도시
-- [ ] 내가 작성한 리뷰 목록 (클라이언트 상태에서 필터링)
-- [ ] "내 정보 수정" 버튼 (닉네임, 관심 도시 수정 가능)
+- [x] 비로그인 접근 시 `/login`으로 리다이렉트
+- [x] 프로필 카드: 닉네임, 이메일, 가입일, 관심 도시
+- [x] 내가 작성한 리뷰 목록 (클라이언트 상태에서 필터링)
+- [x] "내 정보 수정" 버튼 (닉네임, 관심 도시 수정 가능)
 
 ### 검증/확인 사항
-- [ ] 환경변수 없이도 로그인/회원가입 페이지가 렌더링됨 (Supabase 오류 없음)
-- [ ] `test@test.com` / `password123` 입력 후 로그인 → 홈으로 이동되고 Navbar에 닉네임 표시됨
-- [ ] 새로고침 후에도 로그인 상태 유지됨 (localStorage 기반)
-- [ ] 로그아웃 클릭 시 Navbar가 로그인 전 상태로 복원됨
-- [ ] 비로그인 상태에서 `/profile` 접근 시 `/login`으로 리다이렉트됨
-- [ ] 회원가입 후 자동 로그인되어 홈으로 이동됨
-- [ ] TypeScript 컴파일 오류 없음
+- [x] 환경변수 없이도 로그인/회원가입 페이지가 렌더링됨 (Supabase 오류 없음)
+- [x] `test@test.com` / `password123` 입력 후 로그인 → 홈으로 이동되고 Navbar에 닉네임 표시됨
+- [x] 새로고침 후에도 로그인 상태 유지됨 (localStorage 기반)
+- [x] 로그아웃 클릭 시 Navbar가 로그인 전 상태로 복원됨
+- [x] 비로그인 상태에서 `/profile` 접근 시 `/login`으로 리다이렉트됨
+- [x] 회원가입 후 자동 로그인되어 홈으로 이동됨
+- [x] TypeScript 컴파일 오류 없음
 
 ---
 
