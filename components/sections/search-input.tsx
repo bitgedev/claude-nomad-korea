@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Search } from "lucide-react";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cities } from "@/lib/mock-data";
 
+// Phase 1: filter badges are UI-only; wiring to actual filtering is Phase 2
 const filters = ["전체", "수도권", "남부", "제주", "가성비순"];
 
 export function SearchInput() {
@@ -16,17 +17,30 @@ export function SearchInput() {
   const [query, setQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("전체");
   const [open, setOpen] = useState(false);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const queryLower = query.toLowerCase();
   const suggestions =
     open && query.length > 0
       ? cities
           .filter(
             (c) =>
               c.name.includes(query) ||
-              c.nameEn.toLowerCase().includes(query.toLowerCase())
+              c.nameEn.toLowerCase().includes(queryLower)
           )
           .slice(0, 3)
       : [];
+
+  function handleBlur() {
+    closeTimerRef.current = setTimeout(() => setOpen(false), 100);
+  }
+
+  function handleFocus() {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+    }
+    setOpen(true);
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -44,8 +58,8 @@ export function SearchInput() {
             placeholder="도시명 또는 지역을 검색하세요..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            onFocus={() => setOpen(true)}
-            onBlur={() => setTimeout(() => setOpen(false), 100)}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             className="pl-10 h-12 bg-white/90 backdrop-blur-sm text-base rounded-full border-[#1B9AAA]/25 focus:border-[#1B9AAA] focus:ring-[#1B9AAA]/20"
           />
           {suggestions.length > 0 && (

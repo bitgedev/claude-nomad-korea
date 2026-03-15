@@ -83,7 +83,7 @@ export const cities: City[] = [
     rating: 4.6,
     reviewCount: 312,
     description: "바다를 바라보며 작업하는 특별한 경험, 서울보다 저렴한 생활비",
-    tags: ["해변", "가성비", "여유"],
+    tags: ["바다", "가성비", "여유"],
   },
   {
     id: "jeju",
