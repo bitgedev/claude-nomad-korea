@@ -60,9 +60,9 @@ export default function SignupPage() {
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm flex flex-col gap-6">
         <div className="text-center">
-          <a href="/" className="text-2xl font-bold">
+          <Link href="/" className="text-2xl font-bold">
             🇰🇷 NOMAD KOREA
-          </a>
+          </Link>
           <h1 className="mt-4 text-xl font-semibold text-foreground">회원가입</h1>
         </div>
 

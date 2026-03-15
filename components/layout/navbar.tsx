@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Menu } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import {
@@ -12,10 +13,10 @@ import {
 } from "@/components/ui/sheet";
 
 const navLinks = [
-  { label: "도시랭킹", href: "#" },
-  { label: "밋업", href: "#" },
-  { label: "코워킹", href: "#" },
-  { label: "커뮤니티", href: "#" },
+  { label: "도시랭킹", href: "/cities" },
+  { label: "밋업", href: "/meetups" },
+  { label: "코워킹", href: "/coworking" },
+  { label: "커뮤니티", href: "/community" },
 ];
 
 export function Navbar() {
@@ -37,23 +38,23 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
         {/* Logo */}
-        <a href="#" className="flex items-center gap-2 font-bold text-xl tracking-tight">
+        <Link href="/" className="flex items-center gap-2 font-bold text-xl tracking-tight">
           <span>🌿</span>
           <span className="bg-gradient-to-r from-[#1B9AAA] to-[#2D6A4F] bg-clip-text text-transparent">
             NOMAD KOREA
           </span>
-        </a>
+        </Link>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.label}
               href={link.href}
               className="text-sm font-medium text-[#6B6B6B] hover:text-[#1B9AAA] transition-colors"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -64,16 +65,16 @@ export function Navbar() {
             size="sm"
             variant="outline"
             className="rounded-full border-[#1B9AAA] text-[#1B9AAA] hover:bg-[#1B9AAA]/10"
-            asChild
+            render={<Link href="/login" />}
           >
-            <a href="/login">로그인</a>
+            로그인
           </Button>
           <Button
             size="sm"
             className="gap-1 bg-[#1B9AAA] hover:bg-[#1B9AAA]/90 text-white rounded-full px-5"
-            asChild
+            render={<Link href="/signup" />}
           >
-            <a href="/signup">가입하기 →</a>
+            가입하기 →
           </Button>
         </div>
 
@@ -88,21 +89,21 @@ export function Navbar() {
             </SheetTrigger>
             <SheetContent side="right" className="w-72 bg-[#FAF7F2]">
               <div className="flex flex-col gap-6 pt-6">
-                <a href="#" className="flex items-center gap-2 font-bold text-lg">
+                <Link href="/" className="flex items-center gap-2 font-bold text-lg">
                   <span>🌿</span>
                   <span className="bg-gradient-to-r from-[#1B9AAA] to-[#2D6A4F] bg-clip-text text-transparent">
                     NOMAD KOREA
                   </span>
-                </a>
+                </Link>
                 <nav className="flex flex-col gap-4">
                   {navLinks.map((link) => (
                     <SheetClose key={link.label}>
-                      <a
+                      <Link
                         href={link.href}
                         className="text-base font-medium text-[#6B6B6B] hover:text-[#1B9AAA] transition-colors"
                       >
                         {link.label}
-                      </a>
+                      </Link>
                     </SheetClose>
                   ))}
                 </nav>
@@ -110,15 +111,15 @@ export function Navbar() {
                   <Button
                     variant="outline"
                     className="w-full rounded-full border-[#1B9AAA] text-[#1B9AAA] hover:bg-[#1B9AAA]/10"
-                    asChild
+                    render={<Link href="/login" />}
                   >
-                    <a href="/login">로그인</a>
+                    로그인
                   </Button>
                   <Button
                     className="w-full bg-[#1B9AAA] hover:bg-[#1B9AAA]/90 text-white rounded-full"
-                    asChild
+                    render={<Link href="/signup" />}
                   >
-                    <a href="/signup">가입하기 →</a>
+                    가입하기 →
                   </Button>
                 </div>
               </div>

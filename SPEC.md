@@ -26,7 +26,7 @@ Phase 2, 3, 5는 Phase 1 완료 후 **병렬 진행 가능**. Phase 4는 Phase 2
 
 ---
 
-## - [ ] Phase 1: 라우팅 구조 및 페이지 셸 구축
+## - [x] Phase 1: 라우팅 구조 및 페이지 셸 구축
 
 ### 오버뷰
 
@@ -35,45 +35,45 @@ Phase 2, 3, 5는 Phase 1 완료 후 **병렬 진행 가능**. Phase 4는 Phase 2
 ### 수정/개선 사항
 
 **Navbar 링크 연결**
-- [ ] `도시랭킹` → `/cities` 연결
-- [ ] `밋업` → `/meetups` 연결
-- [ ] `코워킹` → `/coworking` 연결
-- [ ] `커뮤니티` → `/community` 연결
-- [ ] 로고 클릭 시 `/` 이동 (현재 `href="#"`)
+- [x] `도시랭킹` → `/cities` 연결
+- [x] `밋업` → `/meetups` 연결
+- [x] `코워킹` → `/coworking` 연결
+- [x] `커뮤니티` → `/community` 연결
+- [x] 로고 클릭 시 `/` 이동 (현재 `href="#"`)
 
 **페이지 셸 생성** (`app/` 디렉토리)
-- [ ] `app/cities/page.tsx` — 도시 목록 페이지 셸 (헤더 + 기본 레이아웃)
-- [ ] `app/meetups/page.tsx` — 밋업 목록 페이지 셸
-- [ ] `app/coworking/page.tsx` — 코워킹 스페이스 목록 페이지 셸
-- [ ] `app/community/page.tsx` — 커뮤니티 페이지 셸
-- [ ] 각 페이지에 Navbar + Footer 포함된 공통 레이아웃 적용
+- [x] `app/cities/page.tsx` — 도시 목록 페이지 셸 (헤더 + 기본 레이아웃)
+- [x] `app/meetups/page.tsx` — 밋업 목록 페이지 셸
+- [x] `app/coworking/page.tsx` — 코워킹 스페이스 목록 페이지 셸
+- [x] `app/community/page.tsx` — 커뮤니티 페이지 셸
+- [x] 각 페이지에 Navbar + Footer 포함된 공통 레이아웃 적용
 
 **Mock 데이터 확장** (`lib/mock-data.ts`)
-- [ ] 도시 추가: 대구, 인천, 광주, 대전 (총 7개)
-- [ ] 각 도시에 `tags: string[]` 필드 추가 (예: `["바다", "가성비"]`)
-- [ ] 리뷰 데이터 10개로 확장 (각 도시 최소 2개 이상)
-- [ ] 밋업 데이터 10개로 확장 (다양한 도시, 날짜 분산)
-- [ ] 코워킹 스페이스 타입 신규 추가: `CoworkingSpace` 타입 (id, name, city, address, pricePerDay, wifi, amenities[], rating, reviewCount)
-- [ ] 코워킹 스페이스 목 데이터 9개 (도시별 3개)
+- [x] 도시 추가: 대구, 인천, 광주, 대전 (총 7개)
+- [x] 각 도시에 `tags: string[]` 필드 추가 (예: `["바다", "가성비"]`)
+- [x] 리뷰 데이터 10개로 확장 (각 도시 최소 2개 이상)
+- [x] 밋업 데이터 10개로 확장 (다양한 도시, 날짜 분산)
+- [x] 코워킹 스페이스 타입 신규 추가: `CoworkingSpace` 타입 (id, name, city, address, pricePerDay, wifi, amenities[], rating, reviewCount)
+- [x] 코워킹 스페이스 목 데이터 9개 (도시별 3개)
 
 **Hero 검색 기능**
-- [ ] `SearchInput` 컴포넌트를 클라이언트 컴포넌트로 전환
-- [ ] 입력값으로 도시명 검색 시 `/cities?q={검색어}`로 이동하는 기능 구현
-- [ ] 검색 제안 드롭다운 (mock 도시 이름 기반, 3개 이내 표시)
+- [x] `SearchInput` 컴포넌트를 클라이언트 컴포넌트로 전환
+- [x] 입력값으로 도시명 검색 시 `/cities?q={검색어}`로 이동하는 기능 구현
+- [x] 검색 제안 드롭다운 (mock 도시 이름 기반, 3개 이내 표시)
 
 **TopCities 섹션 링크**
-- [ ] 각 도시 카드 클릭 시 `/cities/{id}`로 이동 (카드 전체를 링크로 감싸기)
-- [ ] "전체 도시 보기 →" 버튼을 `/cities`로 연결
+- [x] 각 도시 카드 클릭 시 `/cities/{id}`로 이동 (카드 전체를 링크로 감싸기)
+- [x] "전체 도시 보기 →" 버튼을 `/cities`로 연결
 
 ### 검증/확인 사항
-- [ ] Navbar의 4개 링크(도시랭킹, 밋업, 코워킹, 커뮤니티) 클릭 시 해당 페이지로 이동됨
-- [ ] 모바일 Sheet 메뉴에서도 링크 클릭 시 해당 페이지로 이동되고 Sheet 닫힘
-- [ ] 각 페이지(`/cities`, `/meetups`, `/coworking`, `/community`)가 404 없이 렌더링됨
-- [ ] 검색창에 "서울" 입력 후 엔터 시 `/cities?q=서울`로 이동됨
-- [ ] 검색 드롭다운이 입력값에 따라 필터링됨
-- [ ] TopCities 카드 클릭 시 `/cities/{id}` 이동 (Phase 2 전까지 404여도 무방)
-- [ ] `lib/mock-data.ts` 타입 오류 없이 컴파일됨
-- [ ] `CoworkingSpace` 타입이 정의되고 9개 목 데이터가 오류 없이 export됨
+- [x] Navbar의 4개 링크(도시랭킹, 밋업, 코워킹, 커뮤니티) 클릭 시 해당 페이지로 이동됨
+- [x] 모바일 Sheet 메뉴에서도 링크 클릭 시 해당 페이지로 이동되고 Sheet 닫힘
+- [x] 각 페이지(`/cities`, `/meetups`, `/coworking`, `/community`)가 404 없이 렌더링됨
+- [x] 검색창에 "서울" 입력 후 엔터 시 `/cities?q=서울`로 이동됨
+- [x] 검색 드롭다운이 입력값에 따라 필터링됨
+- [x] TopCities 카드 클릭 시 `/cities/{id}` 이동 (Phase 2 전까지 404여도 무방)
+- [x] `lib/mock-data.ts` 타입 오류 없이 컴파일됨
+- [x] `CoworkingSpace` 타입이 정의되고 9개 목 데이터가 오류 없이 export됨
 
 ---
 

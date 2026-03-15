@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { cities } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import { Wifi, DollarSign, Building2 } from "lucide-react";
@@ -69,9 +70,9 @@ export function TopCities() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {cities.map((city, idx) => (
+            <Link key={city.id} href={`/cities/${city.id}`} className="block">
             <div
-              key={city.id}
-              className="bg-white dark:bg-card border border-[#1B9AAA]/15 rounded-3xl p-6 hover:shadow-[0_8px_30px_rgba(27,154,170,0.12)] transition-shadow flex flex-col gap-4"
+              className="bg-white dark:bg-card border border-[#1B9AAA]/15 rounded-3xl p-6 hover:shadow-[0_8px_30px_rgba(27,154,170,0.12)] transition-shadow flex flex-col gap-4 cursor-pointer"
             >
               {/* Header */}
               <div className="flex items-start justify-between">
@@ -138,6 +139,7 @@ export function TopCities() {
                 </span>
               </div>
             </div>
+            </Link>
           ))}
         </div>
 
@@ -146,6 +148,7 @@ export function TopCities() {
             variant="outline"
             size="lg"
             className="gap-1 rounded-full border-[#1B9AAA] text-[#1B9AAA] hover:bg-[#1B9AAA]/10 hover:text-[#1B9AAA]"
+            render={<Link href="/cities" />}
           >
             전체 도시 보기 →
           </Button>

@@ -1,11 +1,12 @@
+import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 
 const footerLinks = [
-  { label: "도시랭킹", href: "#" },
-  { label: "밋업", href: "#" },
-  { label: "코워킹", href: "#" },
-  { label: "커뮤니티", href: "#" },
-  { label: "평가하기", href: "#" },
+  { label: "도시랭킹", href: "/cities" },
+  { label: "밋업", href: "/meetups" },
+  { label: "코워킹", href: "/coworking" },
+  { label: "커뮤니티", href: "/community" },
+  { label: "평가하기", href: "/reviews" },
 ];
 
 export function Footer() {
@@ -14,12 +15,12 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-2 font-bold text-xl tracking-tight">
+          <Link href="/" className="flex items-center gap-2 font-bold text-xl tracking-tight">
             <span>🌿</span>
             <span className="bg-gradient-to-r from-[#1B9AAA] to-[#2D6A4F] bg-clip-text text-transparent">
               NOMAD KOREA
             </span>
-          </a>
+          </Link>
 
           {/* Links */}
           <nav className="flex flex-wrap gap-x-6 gap-y-2">
