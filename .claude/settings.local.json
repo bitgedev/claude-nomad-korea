@@ -18,7 +18,8 @@
       "Bash(node:*)",
       "Bash(npx tsc:*)",
       "Bash(npx next:*)",
-      "Bash(npx eslint:*)"
+      "Bash(npx eslint:*)",
+      "Bash(find:*)"
     ]
   }
 }

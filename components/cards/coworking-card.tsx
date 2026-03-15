@@ -1,21 +1,38 @@
-import { MapPin, Star, Wifi } from "lucide-react";
+"use client";
+
+import { MapPin, Star, Wifi, Heart } from "lucide-react";
 import type { CoworkingSpace } from "@/lib/mock-data";
+import { useFavorites } from "@/providers/favorites-provider";
 
 type CoworkingCardProps = {
   space: CoworkingSpace;
 };
 
 export function CoworkingCard({ space }: CoworkingCardProps) {
+  const { isFavorite, toggle } = useFavorites();
+  const favorited = isFavorite(space.id);
+
   return (
     <div className="bg-white dark:bg-card border border-[#1B9AAA]/15 rounded-2xl p-5 flex flex-col gap-3 hover:shadow-[0_4px_20px_rgba(27,154,170,0.1)] transition-shadow">
       <div className="flex items-start justify-between gap-2">
         <h3 className="text-base font-semibold text-[#4A4A4A] dark:text-foreground">
           {space.name}
         </h3>
-        <span className="shrink-0 text-sm font-bold text-[#FF6B35]">
-          {space.pricePerDay.toLocaleString()}원
-          <span className="text-xs font-normal text-[#6B6B6B]">/일</span>
-        </span>
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="text-sm font-bold text-[#FF6B35]">
+            {space.pricePerDay.toLocaleString()}원
+            <span className="text-xs font-normal text-[#6B6B6B]">/일</span>
+          </span>
+          <button
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggle(space.id); }}
+            className="p-1 rounded-full hover:bg-[#FAF7F2] transition-colors"
+            aria-label={favorited ? "즐겨찾기 제거" : "즐겨찾기 추가"}
+          >
+            <Heart
+              className={`h-4 w-4 ${favorited ? "fill-[#FF6B35] text-[#FF6B35]" : "text-[#6B6B6B]"}`}
+            />
+          </button>
+        </div>
       </div>
 
       <div className="flex items-center gap-1.5 text-sm text-[#6B6B6B]">

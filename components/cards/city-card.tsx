@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
-import { Wifi, DollarSign, Building2 } from "lucide-react";
+import { Wifi, DollarSign, Building2, Heart } from "lucide-react";
 import type { City } from "@/lib/mock-data";
+import { useFavorites } from "@/providers/favorites-provider";
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -63,6 +66,8 @@ type CityCardProps = {
 export function CityCard({ city, rankIndex }: CityCardProps) {
   const idx = rankIndex ?? city.rank - 1;
   const rankColor = rankColors[idx] ?? "bg-[#6B6B6B] text-white";
+  const { isFavorite, toggle } = useFavorites();
+  const favorited = isFavorite(city.id);
 
   return (
     <Link href={`/cities/${city.id}`} className="block">
@@ -82,13 +87,24 @@ export function CityCard({ city, rankIndex }: CityCardProps) {
               <p className="text-sm text-[#6B6B6B]">{city.nameEn}</p>
             </div>
           </div>
-          <span
-            className={`text-xs font-medium px-2.5 py-1 rounded-full ${
-              badgeVariants[city.badge] ?? "bg-[#FAF7F2] text-[#6B6B6B]"
-            }`}
-          >
-            {city.badge}
-          </span>
+          <div className="flex items-center gap-2">
+            <span
+              className={`text-xs font-medium px-2.5 py-1 rounded-full ${
+                badgeVariants[city.badge] ?? "bg-[#FAF7F2] text-[#6B6B6B]"
+              }`}
+            >
+              {city.badge}
+            </span>
+            <button
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggle(city.id); }}
+              className="p-1 rounded-full hover:bg-[#FAF7F2] transition-colors"
+              aria-label={favorited ? "즐겨찾기 제거" : "즐겨찾기 추가"}
+            >
+              <Heart
+                className={`h-4 w-4 ${favorited ? "fill-[#FF6B35] text-[#FF6B35]" : "text-[#6B6B6B]"}`}
+              />
+            </button>
+          </div>
         </div>
 
         <p className="text-sm text-[#6B6B6B]">{city.description}</p>

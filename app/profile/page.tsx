@@ -3,20 +3,29 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/providers/auth-provider";
-import { reviews } from "@/lib/mock-data";
+import { useFavorites } from "@/providers/favorites-provider";
+import { reviews, cities, coworkingSpaces } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
+import { CityCard } from "@/components/cards/city-card";
+import { CoworkingCard } from "@/components/cards/coworking-card";
+import { EmptyState } from "@/components/ui/empty-state";
+import Link from "next/link";
 
 const CITIES = ["서울", "부산", "제주", "대구", "인천", "광주", "대전"];
+
+type ProfileTab = "reviews" | "fav-cities" | "fav-coworking";
 
 export default function ProfilePage() {
   const router = useRouter();
   const { user, updateUser } = useAuth();
+  const { favorites } = useFavorites();
   const [editing, setEditing] = useState(false);
   const [nickname, setNickname] = useState("");
   const [favoriteCity, setFavoriteCity] = useState("");
+  const [activeTab, setActiveTab] = useState<ProfileTab>("reviews");
 
   useEffect(() => {
     if (!user) {
@@ -27,6 +36,8 @@ export default function ProfilePage() {
   if (!user) return null;
 
   const myReviews = reviews.filter((r) => r.nickname === user.nickname);
+  const favCities = cities.filter((c) => favorites.includes(c.id));
+  const favCoworkings = coworkingSpaces.filter((s) => favorites.includes(s.id));
 
   function handleEdit() {
     setNickname(user!.nickname);
@@ -112,26 +123,73 @@ export default function ProfilePage() {
           )}
         </section>
 
-        {/* 내가 작성한 리뷰 */}
+        {/* 탭 */}
         <section className="flex flex-col gap-4">
-          <h2 className="text-lg font-bold text-foreground">
-            내가 작성한 리뷰 <span className="text-[#1B9AAA]">({myReviews.length})</span>
-          </h2>
-          {myReviews.length === 0 ? (
-            <p className="text-sm text-muted-foreground">아직 작성한 리뷰가 없습니다.</p>
-          ) : (
-            <div className="flex flex-col gap-3">
-              {myReviews.map((r) => (
-                <div key={r.id} className="rounded-xl border border-border bg-card p-4 flex flex-col gap-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-semibold text-foreground">{r.cityName}</span>
-                    <span className="text-sm text-amber-500">{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</span>
+          <div className="flex gap-1 border-b border-border">
+            {(
+              [
+                { id: "reviews", label: `내 리뷰 (${myReviews.length})` },
+                { id: "fav-cities", label: `즐겨찾기 도시 (${favCities.length})` },
+                { id: "fav-coworking", label: `즐겨찾기 코워킹 (${favCoworkings.length})` },
+              ] as { id: ProfileTab; label: string }[]
+            ).map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                  activeTab === tab.id
+                    ? "border-[#1B9AAA] text-[#1B9AAA]"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {activeTab === "reviews" && (
+            myReviews.length === 0 ? (
+              <EmptyState icon="📝" message="아직 작성한 리뷰가 없습니다." actionLabel="리뷰 쓰기" actionHref="/reviews" />
+            ) : (
+              <div className="flex flex-col gap-3">
+                {myReviews.map((r) => (
+                  <div key={r.id} className="rounded-xl border border-border bg-card p-4 flex flex-col gap-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-semibold text-foreground">{r.cityName}</span>
+                      <span className="text-sm text-amber-500">{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground line-clamp-2">{r.content}</p>
+                    <p className="text-xs text-muted-foreground">{r.date}</p>
                   </div>
-                  <p className="text-sm text-muted-foreground line-clamp-2">{r.content}</p>
-                  <p className="text-xs text-muted-foreground">{r.date}</p>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )
+          )}
+
+          {activeTab === "fav-cities" && (
+            favCities.length === 0 ? (
+              <EmptyState icon="🏙️" message="즐겨찾기한 도시가 없습니다." actionLabel="도시 탐색" actionHref="/cities" />
+            ) : (
+              <div className="flex flex-col gap-4">
+                {favCities.map((city) => (
+                  <CityCard key={city.id} city={city} />
+                ))}
+              </div>
+            )
+          )}
+
+          {activeTab === "fav-coworking" && (
+            favCoworkings.length === 0 ? (
+              <EmptyState icon="💻" message="즐겨찾기한 코워킹 스페이스가 없습니다." actionLabel="코워킹 탐색" actionHref="/coworking" />
+            ) : (
+              <div className="flex flex-col gap-4">
+                {favCoworkings.map((space) => (
+                  <Link key={space.id} href={`/coworking/${space.id}`}>
+                    <CoworkingCard space={space} />
+                  </Link>
+                ))}
+              </div>
+            )
           )}
         </section>
       </main>

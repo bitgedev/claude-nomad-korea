@@ -23,6 +23,7 @@ export type Review = {
   date: string;
   content: string;
   hashtags: string[];
+  coworkingId?: string;
 };
 
 export type Nomad = {
@@ -184,6 +185,7 @@ export const reviews: Review[] = [
     content:
       "성수동 카페에서 작업하는 느낌이 정말 좋아요. 기가비트 와이파이에 노트북 충전 포트도 넉넉하고, 주변에 맛집도 많아서 점심 걱정이 없네요. 한 달 살기 강력 추천합니다!",
     hashtags: ["#성수동", "#카페작업", "#기가와이파이"],
+    coworkingId: "cw1",
   },
   {
     id: "r2",
@@ -194,6 +196,7 @@ export const reviews: Review[] = [
     content:
       "제주에서 3개월 살았는데 인생 최고의 경험이었어요. 애월 카페에서 바다 보면서 코딩하다 보면 시간 가는 줄 모르고, 퇴근 후엔 한라산 트레킹. 번아웃 완전 해소됐습니다.",
     hashtags: ["#제주살이", "#애월카페", "#워케이션"],
+    coworkingId: "cw8",
   },
   {
     id: "r3",
@@ -204,6 +207,7 @@ export const reviews: Review[] = [
     content:
       "해운대 근처 코워킹 스페이스 가격 대비 퀄리티 최고예요. 서울보다 훨씬 여유롭고 바다 산책도 가능해서 스트레스 관리에 좋습니다. 다만 글로벌 밋업은 서울보다 적은 편.",
     hashtags: ["#해운대", "#코워킹", "#부산노마드"],
+    coworkingId: "cw4",
   },
   {
     id: "r4",
@@ -214,6 +218,7 @@ export const reviews: Review[] = [
     content:
       "강남 코워킹에서 미팅 후 테헤란로 걷기. 스타트업 에너지가 넘치는 도시예요. 곳곳에 개발자 컨퍼런스와 네트워킹 행사가 열려서 자극도 많이 받고 인맥도 쌓을 수 있어요.",
     hashtags: ["#강남", "#테헤란로", "#스타트업"],
+    coworkingId: "cw2",
   },
   {
     id: "r5",
@@ -244,6 +249,7 @@ export const reviews: Review[] = [
     content:
       "한달살이 두 번째 방문. 서귀포 감귤밭 옆 카페에서 재택. 힐링 완료했습니다. 오전에 오름 트레킹하고 오후에 코딩하면 하루가 너무 알차요. 공기도 맑고 스트레스가 없어요.",
     hashtags: ["#서귀포", "#감귤", "#제주한달살이"],
+    coworkingId: "cw9",
   },
   {
     id: "r8",

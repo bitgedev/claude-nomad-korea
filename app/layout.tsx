@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { AuthProvider } from "@/providers/auth-provider";
+import { FavoritesProvider } from "@/providers/favorites-provider";
+import { ScrollToTop } from "@/components/ui/scroll-to-top";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,7 +37,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            {children}
+            <FavoritesProvider>
+              {children}
+              <ScrollToTop />
+            </FavoritesProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>
