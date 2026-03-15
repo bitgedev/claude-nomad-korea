@@ -15,7 +15,9 @@
       "Bash(gh auth:*)",
       "Bash(gh repo:*)",
       "Bash(ls:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx next:*)"
     ]
   }
 }

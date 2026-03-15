@@ -32,12 +32,19 @@ export type Nomad = {
   online: boolean;
 };
 
+export type MeetupCategory = "네트워킹" | "스터디" | "워크숍" | "소셜";
+
 export type Meetup = {
   id: string;
   title: string;
   date: string;
   city: string;
   rsvp: number;
+  description: string;
+  category: MeetupCategory;
+  maxAttendees: number;
+  organizer: string;
+  tags: string[];
 };
 
 export type CoworkingSpace = {
@@ -285,6 +292,11 @@ export const meetups: Meetup[] = [
     date: "3월 20일 (목) 19:00",
     city: "서울",
     rsvp: 34,
+    description: "서울 성수동에서 열리는 디지털 노마드 네트워킹 행사입니다. 프리랜서, 원격근무자, 스타트업 창업자들이 모여 경험을 나누고 인맥을 쌓는 자리입니다. 가볍게 음료 한 잔 하면서 다양한 사람들과 이야기 나눠보세요.",
+    category: "네트워킹",
+    maxAttendees: 50,
+    organizer: "CodeNomad_K",
+    tags: ["네트워킹", "성수동", "프리랜서"],
   },
   {
     id: "m2",
@@ -292,6 +304,11 @@ export const meetups: Meetup[] = [
     date: "3월 22일 (토) 14:00",
     city: "제주",
     rsvp: 18,
+    description: "제주에서 활동하는 개발자들의 주간 모임입니다. 각자의 사이드 프로젝트를 공유하고 기술 이야기를 나누는 캐주얼한 자리입니다. 노트북 지참 환영!",
+    category: "스터디",
+    maxAttendees: 25,
+    organizer: "IslandWorker",
+    tags: ["개발", "제주", "사이드프로젝트"],
   },
   {
     id: "m3",
@@ -299,6 +316,11 @@ export const meetups: Meetup[] = [
     date: "3월 25일 (화) 10:00",
     city: "부산",
     rsvp: 12,
+    description: "해운대 바다 뷰 카페에서 진행하는 리모트워커들의 커피챗입니다. 원격근무 팁과 생산성 노하우를 자유롭게 공유하는 소규모 모임이에요.",
+    category: "소셜",
+    maxAttendees: 20,
+    organizer: "RemoteDevBusan",
+    tags: ["리모트워크", "해운대", "커피챗"],
   },
   {
     id: "m4",
@@ -306,6 +328,11 @@ export const meetups: Meetup[] = [
     date: "3월 27일 (목) 19:30",
     city: "서울",
     rsvp: 27,
+    description: "프리랜서와 1인 사업자를 위한 세금 스터디입니다. 종합소득세 신고, 부가가치세, 경비 처리 방법 등 실질적인 세무 지식을 함께 공부합니다. 세무사 게스트 스피커 예정.",
+    category: "스터디",
+    maxAttendees: 40,
+    organizer: "SeoulCoder99",
+    tags: ["세금", "프리랜서", "재테크"],
   },
   {
     id: "m5",
@@ -313,6 +340,11 @@ export const meetups: Meetup[] = [
     date: "3월 29일 (토) 17:00",
     city: "제주",
     rsvp: 21,
+    description: "제주 협재 해변에서 진행하는 선셋 요가와 네트워킹 행사입니다. 요가 세션 후 자연스럽게 네트워킹하는 힐링 밋업입니다. 요가 매트 지참 부탁드립니다.",
+    category: "소셜",
+    maxAttendees: 30,
+    organizer: "JejuDesigner",
+    tags: ["요가", "협재해변", "힐링"],
   },
   {
     id: "m6",
@@ -320,6 +352,11 @@ export const meetups: Meetup[] = [
     date: "4월 3일 (목) 19:00",
     city: "대구",
     rsvp: 9,
+    description: "대구 디지털 노마드 커뮤니티의 첫 번째 공식 밋업입니다. 대구에서 활동하는 원격근무자, 프리랜서, 창업자들이 처음으로 한 자리에 모입니다. 새로운 인연의 시작이 될 특별한 자리입니다.",
+    category: "네트워킹",
+    maxAttendees: 30,
+    organizer: "TechDaegu",
+    tags: ["대구", "첫밋업", "커뮤니티"],
   },
   {
     id: "m7",
@@ -327,6 +364,11 @@ export const meetups: Meetup[] = [
     date: "4월 5일 (토) 09:00",
     city: "인천",
     rsvp: 15,
+    description: "송도 센트럴파크 인근에서 진행하는 조식 네트워킹입니다. 아침 식사를 함께하며 가볍게 대화를 나누는 편안한 모임입니다. 공원 산책 후 카페에서 이어집니다.",
+    category: "네트워킹",
+    maxAttendees: 25,
+    organizer: "SongdoWorker",
+    tags: ["송도", "조식", "공원"],
   },
   {
     id: "m8",
@@ -334,6 +376,11 @@ export const meetups: Meetup[] = [
     date: "4월 8일 (화) 14:00",
     city: "광주",
     rsvp: 11,
+    description: "광주 문화예술의 도시를 함께 탐방하는 노마드 투어입니다. 국립아시아문화전당, 충장로 예술 거리를 함께 걷고 작업하기 좋은 카페와 공간을 소개합니다.",
+    category: "소셜",
+    maxAttendees: 20,
+    organizer: "NomadMom",
+    tags: ["광주", "문화투어", "예술"],
   },
   {
     id: "m9",
@@ -341,6 +388,11 @@ export const meetups: Meetup[] = [
     date: "4월 10일 (목) 19:30",
     city: "대전",
     rsvp: 22,
+    description: "대전 개발자와 디자이너들의 사이드 프로젝트 발표 행사입니다. 5분 라이트닝 토크 형식으로 진행되며 피드백과 협업 기회를 찾을 수 있습니다. 발표자 사전 신청 환영!",
+    category: "워크숍",
+    maxAttendees: 35,
+    organizer: "KaistNeighbor",
+    tags: ["사이드프로젝트", "발표", "개발"],
   },
   {
     id: "m10",
@@ -348,6 +400,71 @@ export const meetups: Meetup[] = [
     date: "4월 12일 (토) 17:30",
     city: "부산",
     rsvp: 19,
+    description: "해운대 해변을 따라 달리는 선셋 런닝 모임입니다. 약 5km 코스로 편하게 달리고 이후 해변 카페에서 네트워킹합니다. 운동 실력 상관없이 누구나 환영합니다.",
+    category: "소셜",
+    maxAttendees: 30,
+    organizer: "SurfDev",
+    tags: ["런닝", "해운대", "운동"],
+  },
+  {
+    id: "m11",
+    title: "서울 UX/UI 디자인 워크숍",
+    date: "4월 15일 (화) 14:00",
+    city: "서울",
+    rsvp: 16,
+    description: "피그마를 활용한 실전 UX/UI 디자인 워크숍입니다. 노마드 플랫폼 디자인을 주제로 함께 작업하며 피드백을 주고받습니다. 피그마 계정 필수, 노트북 지참 바랍니다.",
+    category: "워크숍",
+    maxAttendees: 20,
+    organizer: "SeoulCoder99",
+    tags: ["UX", "피그마", "디자인"],
+  },
+  {
+    id: "m12",
+    title: "제주 영어 스터디 & 네트워킹",
+    date: "4월 17일 (목) 18:00",
+    city: "제주",
+    rsvp: 14,
+    description: "제주 노마드들을 위한 영어 스터디 겸 네트워킹 모임입니다. 영어 프레젠테이션 연습과 외국인 노마드와의 교류를 목적으로 합니다. 영어 초중급자도 환영합니다.",
+    category: "스터디",
+    maxAttendees: 20,
+    organizer: "IslandWorker",
+    tags: ["영어", "스터디", "외국인"],
+  },
+  {
+    id: "m13",
+    title: "부산 프리랜서 포트폴리오 리뷰",
+    date: "4월 19일 (토) 13:00",
+    city: "부산",
+    rsvp: 10,
+    description: "프리랜서 개발자와 디자이너를 위한 포트폴리오 상호 리뷰 세션입니다. 서로의 작업물을 솔직하게 피드백하고 더 나은 포트폴리오를 만들 수 있도록 도와줍니다.",
+    category: "워크숍",
+    maxAttendees: 15,
+    organizer: "RemoteDevBusan",
+    tags: ["포트폴리오", "프리랜서", "피드백"],
+  },
+  {
+    id: "m14",
+    title: "서울 스타트업 창업 스터디",
+    date: "4월 22일 (화) 19:00",
+    city: "서울",
+    rsvp: 31,
+    description: "스타트업 창업을 꿈꾸는 노마드들의 스터디 모임입니다. 비즈니스 모델, 투자 유치, MVP 개발 등 창업 전반에 걸친 내용을 함께 공부합니다. 현직 창업자 멘토링 포함.",
+    category: "스터디",
+    maxAttendees: 40,
+    organizer: "CodeNomad_K",
+    tags: ["창업", "스타트업", "멘토링"],
+  },
+  {
+    id: "m15",
+    title: "대전 AI 개발자 밋업",
+    date: "4월 24일 (목) 19:00",
+    city: "대전",
+    rsvp: 25,
+    description: "대전 KAIST, ETRI 인근의 AI 개발자와 연구자들이 모이는 밋업입니다. 최신 AI 트렌드와 실제 프로젝트 사례를 공유하고 협업 기회를 찾습니다.",
+    category: "네트워킹",
+    maxAttendees: 40,
+    organizer: "KaistNeighbor",
+    tags: ["AI", "개발", "연구"],
   },
 ];
 

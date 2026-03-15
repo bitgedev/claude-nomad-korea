@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { nomads, meetups } from "@/lib/mock-data";
 import { Calendar, MapPin, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -59,24 +60,26 @@ export function Activity() {
                   key={meetup.id}
                   className="flex flex-col gap-1 py-2 border-b border-[#1B9AAA]/10 last:border-0"
                 >
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="font-medium text-[#4A4A4A] dark:text-foreground text-sm leading-snug">
-                      {meetup.title}
-                    </span>
-                    <Badge
-                      variant="secondary"
-                      className="flex-shrink-0 text-xs bg-[#1B9AAA]/10 text-[#1B9AAA] border-0"
-                    >
-                      {meetup.city}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center justify-between text-xs text-[#6B6B6B]">
-                    <span>{meetup.date}</span>
-                    <span className="flex items-center gap-1">
-                      <Users className="h-3 w-3" />
-                      RSVP {meetup.rsvp}명
-                    </span>
-                  </div>
+                  <Link href={`/meetups/${meetup.id}`} className="block hover:opacity-80 transition-opacity">
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="font-medium text-[#4A4A4A] dark:text-foreground text-sm leading-snug">
+                        {meetup.title}
+                      </span>
+                      <Badge
+                        variant="secondary"
+                        className="flex-shrink-0 text-xs bg-[#1B9AAA]/10 text-[#1B9AAA] border-0"
+                      >
+                        {meetup.city}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-[#6B6B6B]">
+                      <span>{meetup.date}</span>
+                      <span className="flex items-center gap-1">
+                        <Users className="h-3 w-3" />
+                        RSVP {meetup.rsvp}명
+                      </span>
+                    </div>
+                  </Link>
                 </li>
               ))}
             </ul>
