@@ -474,6 +474,154 @@ export const meetups: Meetup[] = [
   },
 ];
 
+export type PostCategory = "자유" | "질문" | "정보공유" | "후기";
+
+export type Post = {
+  id: string;
+  title: string;
+  content: string;
+  author: string;
+  city: string;
+  date: string;
+  category: PostCategory;
+  likes: number;
+  comments: number;
+  tags: string[];
+};
+
+export const posts: Post[] = [
+  {
+    id: "p1",
+    title: "서울 성수동 카페 작업 스팟 추천",
+    content:
+      "성수동에서 한 달 작업하면서 찾은 최고의 카페들을 공유합니다. 기가 와이파이에 콘센트도 충분하고 조용한 분위기가 최고예요.",
+    author: "CodeNomad_K",
+    city: "서울",
+    date: "2026.03.15",
+    category: "정보공유",
+    likes: 42,
+    comments: 8,
+    tags: ["성수동", "카페추천", "작업스팟"],
+  },
+  {
+    id: "p2",
+    title: "제주 한달살이 준비 시 꼭 알아야 할 것",
+    content:
+      "제주 한달살이 세 번 경험하면서 알게 된 팁들을 정리했어요. 숙소 예약 타이밍, 렌트카 vs 대중교통 비교 등 실용적인 정보가 가득합니다.",
+    author: "IslandWorker",
+    city: "제주",
+    date: "2026.03.14",
+    category: "정보공유",
+    likes: 87,
+    comments: 19,
+    tags: ["제주한달살이", "준비", "팁"],
+  },
+  {
+    id: "p3",
+    title: "원격근무 중 슬럼프 어떻게 극복하셨나요?",
+    content:
+      "노마드 6개월차인데 요즘 동기부여가 많이 떨어졌어요. 루틴 유지가 너무 어렵고 집중도 안 되고... 비슷한 경험 있으신 분들 어떻게 극복하셨는지 궁금합니다.",
+    author: "RemoteDevBusan",
+    city: "부산",
+    date: "2026.03.13",
+    category: "질문",
+    likes: 34,
+    comments: 24,
+    tags: ["번아웃", "동기부여", "노마드고민"],
+  },
+  {
+    id: "p4",
+    title: "대전에서 AI 개발자로 살아가기",
+    content:
+      "KAIST 근처에서 반년째 노마딩 중입니다. 연구자들과 카페에서 대화하다 보면 자연스럽게 최신 AI 트렌드를 흡수하게 돼요. 대전의 기술 생태계를 소개합니다.",
+    author: "KaistNeighbor",
+    city: "대전",
+    date: "2026.03.12",
+    category: "후기",
+    likes: 56,
+    comments: 11,
+    tags: ["대전", "AI", "개발자"],
+  },
+  {
+    id: "p5",
+    title: "프리랜서 세금 신고 대행 서비스 써본 분?",
+    content:
+      "올해 처음으로 종합소득세 신고를 직접 해야 하는데 너무 복잡해서요. 세금 신고 대행 서비스 써보신 분들 후기 부탁드립니다. 비용 대비 가치 있나요?",
+    author: "SeoulCoder99",
+    city: "서울",
+    date: "2026.03.11",
+    category: "질문",
+    likes: 28,
+    comments: 15,
+    tags: ["세금", "프리랜서", "세무"],
+  },
+  {
+    id: "p6",
+    title: "광주 국립아시아문화전당 작업 후기",
+    content:
+      "광주 ACC에서 처음 작업해봤는데 너무 좋았어요. 탁 트인 공간에 무료 와이파이, 조용한 분위기. 관광객도 많지 않아서 집중도 잘 됩니다. 광주 오시면 꼭 가보세요!",
+    author: "NomadMom",
+    city: "광주",
+    date: "2026.03.10",
+    category: "후기",
+    likes: 19,
+    comments: 5,
+    tags: ["광주", "ACC", "무료작업공간"],
+  },
+  {
+    id: "p7",
+    title: "노마드 초보자가 가장 많이 하는 실수 5가지",
+    content:
+      "저도 처음엔 많이 헤맸는데 1년 지나니 패턴이 보이더라고요. 너무 많은 도시 욕심내기, 인터넷 체크 안 하기, 백업 작업공간 없이 이동하기 등 공유합니다.",
+    author: "SurfDev",
+    city: "부산",
+    date: "2026.03.09",
+    category: "정보공유",
+    likes: 103,
+    comments: 31,
+    tags: ["초보", "팁", "실수"],
+  },
+  {
+    id: "p8",
+    title: "인천 송도 한 달 살아본 솔직 후기",
+    content:
+      "서울 옆이지만 완전히 다른 느낌. 센트럴파크 주변 산책하며 미팅하고 카페에서 집중 작업. 외국 도시 느낌이라 기분 전환에 최고였어요.",
+    author: "SongdoWorker",
+    city: "인천",
+    date: "2026.03.08",
+    category: "후기",
+    likes: 45,
+    comments: 9,
+    tags: ["인천", "송도", "한달살이"],
+  },
+  {
+    id: "p9",
+    title: "좋은 코워킹 스페이스 고르는 기준이 뭔가요?",
+    content:
+      "도시마다 코워킹 스페이스를 새로 찾아야 하는데 항상 고민됩니다. 여러분만의 선택 기준이 있나요? 가격, 위치, 시설 중 어느 게 제일 중요한지도 궁금해요.",
+    author: "TechDaegu",
+    city: "대구",
+    date: "2026.03.07",
+    category: "질문",
+    likes: 22,
+    comments: 17,
+    tags: ["코워킹", "선택기준", "팁"],
+  },
+  {
+    id: "p10",
+    title: "부산에서 만난 노마드들 소개합니다",
+    content:
+      "지난 달 부산 노마드 밋업에서 만난 분들과 지금도 계속 교류 중이에요. 노마드 커뮤니티의 힘을 느낀 경험이었어요. 다들 밋업 많이 나오세요!",
+    author: "RemoteDevBusan",
+    city: "부산",
+    date: "2026.03.06",
+    category: "자유",
+    likes: 38,
+    comments: 6,
+    tags: ["부산", "밋업", "커뮤니티"],
+  },
+];
+
 export const coworkingSpaces: CoworkingSpace[] = [
   {
     id: "cw1",
