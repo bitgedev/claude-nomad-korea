@@ -84,48 +84,47 @@ export default function CommunityPage() {
           {filtered.map((post) => (
             <article
               key={post.id}
-              className="bg-white dark:bg-card border border-[#1B9AAA]/10 rounded-2xl p-5 hover:shadow-md transition-shadow cursor-pointer"
+              className="bg-white dark:bg-card border border-[#1B9AAA]/10 rounded-2xl p-5 hover:shadow-lg transition-shadow cursor-pointer"
               onClick={() => alert("게시글 상세 페이지는 준비 중입니다.")}
             >
-              <div className="flex items-start gap-3">
-                <div className="flex-1 min-w-0">
-                  {/* 카테고리 배지 + 제목 */}
-                  <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                    <span
-                      className={`text-xs font-medium px-2 py-0.5 rounded-full ${CATEGORY_COLOR[post.category]}`}
-                    >
-                      {post.category}
-                    </span>
-                    <h2 className="text-[#4A4A4A] dark:text-foreground font-semibold text-sm sm:text-base line-clamp-1">
-                      {post.title}
-                    </h2>
-                  </div>
-                  {/* 본문 미리보기 */}
-                  <p className="text-[#6B6B6B] text-sm line-clamp-2 mb-3">{post.content}</p>
-                  {/* 메타 정보 */}
-                  <div className="flex items-center gap-3 text-xs text-[#6B6B6B]">
-                    <span className="font-medium text-[#4A4A4A] dark:text-foreground">
-                      {post.author}
-                    </span>
-                    <span className="text-[#1B9AAA]">{post.city}</span>
-                    <span>{post.date}</span>
-                  </div>
-                </div>
-                {/* 액션 */}
-                <div
-                  className="flex flex-col items-center gap-3 shrink-0"
-                  onClick={(e) => e.stopPropagation()}
+              {/* 카테고리 배지 + 제목 */}
+              <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                <span
+                  className={`text-xs font-medium px-2 py-0.5 rounded-full ${CATEGORY_COLOR[post.category]}`}
                 >
+                  {post.category}
+                </span>
+                <h2 className="text-[#4A4A4A] dark:text-foreground font-semibold text-sm sm:text-base line-clamp-1">
+                  {post.title}
+                </h2>
+              </div>
+              {/* 본문 미리보기 */}
+              <p className="text-[#6B6B6B] text-sm line-clamp-2 mb-3">{post.content}</p>
+              {/* 하단 footer: 메타 정보 + 액션 버튼 */}
+              <div
+                className="flex items-center justify-between border-t border-[#1B9AAA]/10 pt-3 mt-1"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* 메타 정보 */}
+                <div className="flex items-center gap-3 text-xs text-[#6B6B6B]">
+                  <span className="font-medium text-[#4A4A4A] dark:text-foreground">
+                    {post.author}
+                  </span>
+                  <span className="text-[#1B9AAA]">{post.city}</span>
+                  <span>{post.date}</span>
+                </div>
+                {/* 액션 버튼 */}
+                <div className="flex items-center gap-4 shrink-0">
                   <button
                     onClick={() => handleLike(post.id)}
-                    className={`flex flex-col items-center gap-0.5 transition-colors ${
+                    className={`flex items-center gap-1 transition-colors ${
                       likedIds.has(post.id) ? "text-[#FF6B35]" : "text-[#6B6B6B] hover:text-[#FF6B35]"
                     }`}
                   >
                     <ThumbsUp className="w-4 h-4" />
                     <span className="text-xs">{post.likes}</span>
                   </button>
-                  <div className="flex flex-col items-center gap-0.5 text-[#6B6B6B]">
+                  <div className="flex items-center gap-1 text-[#6B6B6B]">
                     <MessageCircle className="w-4 h-4" />
                     <span className="text-xs">{post.comments}</span>
                   </div>
