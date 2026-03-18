@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 export type MockUser = {
   id: string;
@@ -24,15 +24,16 @@ const MOCK_TAKEN_NICKNAMES = ["admin", "nomad", "테스터", "관리자"];
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<MockUser | null>(() => {
-    if (typeof window === "undefined") return null;
+  const [user, setUser] = useState<MockUser | null>(null);
+
+  useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? (JSON.parse(stored) as MockUser) : null;
+      if (stored) setUser(JSON.parse(stored) as MockUser);
     } catch {
-      return null;
+      // ignore
     }
-  });
+  }, []);
 
   const persist = (u: MockUser | null) => {
     if (u) localStorage.setItem(STORAGE_KEY, JSON.stringify(u));

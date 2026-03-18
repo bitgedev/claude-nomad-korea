@@ -116,6 +116,7 @@ export function Navbar() {
                 size="sm"
                 variant="outline"
                 className="rounded-full border-[#1B9AAA] text-[#1B9AAA] hover:bg-[#1B9AAA]/10"
+                nativeButton={false}
                 render={<Link href="/login" />}
               >
                 로그인
@@ -123,6 +124,7 @@ export function Navbar() {
               <Button
                 size="sm"
                 className="gap-1 bg-[#1B9AAA] hover:bg-[#1B9AAA]/90 text-white rounded-full px-5"
+                nativeButton={false}
                 render={<Link href="/signup" />}
               >
                 가입하기 →
@@ -187,12 +189,14 @@ export function Navbar() {
                       <Button
                         variant="outline"
                         className="w-full rounded-full border-[#1B9AAA] text-[#1B9AAA] hover:bg-[#1B9AAA]/10"
+                        nativeButton={false}
                         render={<Link href="/login" />}
                       >
                         로그인
                       </Button>
                       <Button
                         className="w-full bg-[#1B9AAA] hover:bg-[#1B9AAA]/90 text-white rounded-full"
+                        nativeButton={false}
                         render={<Link href="/signup" />}
                       >
                         가입하기 →

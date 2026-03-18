@@ -27,6 +27,7 @@ export function TopCities() {
             variant="outline"
             size="lg"
             className="gap-1 rounded-full border-[#1B9AAA] text-[#1B9AAA] hover:bg-[#1B9AAA]/10 hover:text-[#1B9AAA]"
+            nativeButton={false}
             render={<Link href="/cities" />}
           >
             전체 도시 보기 →
