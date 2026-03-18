@@ -122,7 +122,7 @@ export default function CommunityPage() {
                       likedIds.has(post.id) ? "text-[#FF6B35]" : "text-[#6B6B6B] hover:text-[#FF6B35]"
                     }`}
                   >
-                    <ThumbsUp className="w-4 h-4" />
+                    <ThumbsUp className="w-4 h-4" fill={likedIds.has(post.id) ? "currentColor" : "none"} />
                     <span className="text-xs">{post.likes}</span>
                   </button>
                   <div className="flex items-center gap-1 text-[#6B6B6B]">
