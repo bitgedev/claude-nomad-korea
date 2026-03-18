@@ -25,17 +25,18 @@ export default function CommunityPage() {
   );
 
   function handleLike(id: string) {
+    const isLiked = likedIds.has(id);
     setLikedIds((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-        setPosts((p) => p.map((post) => (post.id === id ? { ...post, likes: post.likes - 1 } : post)));
-      } else {
-        next.add(id);
-        setPosts((p) => p.map((post) => (post.id === id ? { ...post, likes: post.likes + 1 } : post)));
-      }
+      if (isLiked) next.delete(id);
+      else next.add(id);
       return next;
     });
+    setPosts((p) =>
+      p.map((post) =>
+        post.id === id ? { ...post, likes: post.likes + (isLiked ? -1 : 1) } : post
+      )
+    );
   }
 
   const filtered =
