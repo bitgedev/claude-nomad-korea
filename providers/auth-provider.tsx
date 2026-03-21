@@ -20,7 +20,8 @@ type AuthContextType = {
   updateUser: (updates: Partial<Pick<AuthUser, "nickname" | "favoriteCity">>) => Promise<void>;
 };
 
-const AuthContext = createContext<AuthContextType | null>(null);
+export const AuthContext = createContext<AuthContextType | null>(null);
+export type { AuthContextType };
 
 function toAuthUser(supabaseUser: User, profile: { nickname: string; favorite_city: string | null; created_at: string | null }): AuthUser {
   return {
