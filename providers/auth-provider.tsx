@@ -58,15 +58,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   async function loadProfile(supabaseUser: User) {
-    const { data: profile } = await supabase
+    let { data: profile } = await supabase
       .from("profiles")
       .select("nickname, favorite_city, created_at")
       .eq("id", supabaseUser.id)
       .single();
 
-    if (profile) {
-      setUser(toAuthUser(supabaseUser, profile));
+    if (!profile) {
+      const fallbackNickname = supabaseUser.user_metadata?.nickname ?? supabaseUser.email?.split("@")[0] ?? "user";
+      await supabase.from("profiles").insert({ id: supabaseUser.id, nickname: fallbackNickname });
+      profile = { nickname: fallbackNickname, favorite_city: null, created_at: null };
     }
+
+    setUser(toAuthUser(supabaseUser, profile));
   }
 
   const login = async (email: string, password: string) => {
