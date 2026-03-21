@@ -31,7 +31,8 @@
       "Bash(gh run:*)",
       "Bash(npm install:*)",
       "Bash(npx vitest:*)",
-      "Bash(npx playwright:*)"
+      "Bash(npx playwright:*)",
+      "Bash(gh issue:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
