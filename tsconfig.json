@@ -30,5 +30,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", "worktree"]
+  "exclude": ["node_modules", "worktree", "__tests__", "e2e"]
 }
