@@ -30,7 +30,9 @@
       "mcp__supabase__generate_typescript_types",
       "Bash(gh run:*)",
       "Bash(npm install:*)",
-      "Bash(npx vitest:*)"
+      "Bash(npx vitest:*)",
+      "Bash(npx playwright:*)",
+      "Bash(gh issue:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
