@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
-import { posts as mockPosts } from "@/lib/mock-data";
+import { createClient } from "@/lib/supabase/client";
+import { rowToPost } from "@/lib/supabase/mappers";
 import type { Post, PostCategory } from "@/lib/mock-data";
 import { MessageCircle, ThumbsUp, PenLine } from "lucide-react";
 
@@ -18,14 +19,48 @@ const CATEGORY_COLOR: Record<PostCategory, string> = {
 };
 
 export default function CommunityPage() {
-  const [posts, setPosts] = useState<Post[]>(mockPosts);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [likedIds, setLikedIds] = useState<Set<string>>(new Set());
-  const [selectedCategory, setSelectedCategory] = useState<PostCategory | typeof ALL_TAB>(
-    ALL_TAB
-  );
+  const [selectedCategory, setSelectedCategory] = useState<PostCategory | typeof ALL_TAB>(ALL_TAB);
+  const [loading, setLoading] = useState(true);
 
-  function handleLike(id: string) {
+  useEffect(() => {
+    const supabase = createClient();
+
+    async function load() {
+      const [{ data: postRows }, { data: { user } }] = await Promise.all([
+        supabase.from("posts").select("*").order("date", { ascending: false }),
+        supabase.auth.getUser(),
+      ]);
+
+      setPosts((postRows ?? []).map(rowToPost));
+
+      if (user) {
+        const { data: likeRows } = await supabase
+          .from("post_likes")
+          .select("post_id")
+          .eq("user_id", user.id);
+        setLikedIds(new Set((likeRows ?? []).map((r) => r.post_id)));
+      }
+
+      setLoading(false);
+    }
+
+    load();
+  }, []);
+
+  async function handleLike(id: string) {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      alert("로그인 후 좋아요를 누를 수 있습니다.");
+      return;
+    }
+
     const isLiked = likedIds.has(id);
+
+    // optimistic update
     setLikedIds((prev) => {
       const next = new Set(prev);
       if (isLiked) next.delete(id);
@@ -37,6 +72,26 @@ export default function CommunityPage() {
         post.id === id ? { ...post, likes: post.likes + (isLiked ? -1 : 1) } : post
       )
     );
+
+    if (isLiked) {
+      await supabase
+        .from("post_likes")
+        .delete()
+        .eq("post_id", id)
+        .eq("user_id", user.id);
+      await supabase
+        .from("posts")
+        .update({ likes_count: posts.find((p) => p.id === id)!.likes - 1 })
+        .eq("id", id);
+    } else {
+      await supabase
+        .from("post_likes")
+        .insert({ post_id: id, user_id: user.id });
+      await supabase
+        .from("posts")
+        .update({ likes_count: posts.find((p) => p.id === id)!.likes + 1 })
+        .eq("id", id);
+    }
   }
 
   const filtered =
@@ -81,64 +136,71 @@ export default function CommunityPage() {
         </div>
 
         {/* 게시글 목록 */}
-        <div className="flex flex-col gap-3">
-          {filtered.map((post) => (
-            <article
-              key={post.id}
-              className="bg-white dark:bg-card border border-[#1B9AAA]/10 rounded-2xl p-5 hover:shadow-lg transition-shadow cursor-pointer"
-              onClick={() => alert("게시글 상세 페이지는 준비 중입니다.")}
-            >
-              {/* 카테고리 배지 + 제목 */}
-              <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                <span
-                  className={`text-xs font-medium px-2 py-0.5 rounded-full ${CATEGORY_COLOR[post.category]}`}
-                >
-                  {post.category}
-                </span>
-                <h2 className="text-[#4A4A4A] dark:text-foreground font-semibold text-sm sm:text-base line-clamp-1">
-                  {post.title}
-                </h2>
-              </div>
-              {/* 본문 미리보기 */}
-              <p className="text-[#6B6B6B] text-sm line-clamp-2 mb-3">{post.content}</p>
-              {/* 하단 footer: 메타 정보 + 액션 버튼 */}
-              <div
-                className="flex items-center justify-between border-t border-[#1B9AAA]/10 pt-3 mt-1"
-                onClick={(e) => e.stopPropagation()}
+        {loading ? (
+          <div className="text-center py-20 text-[#6B6B6B]">
+            <p className="text-4xl mb-3">⏳</p>
+            <p className="font-medium">불러오는 중...</p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {filtered.map((post) => (
+              <article
+                key={post.id}
+                className="bg-white dark:bg-card border border-[#1B9AAA]/10 rounded-2xl p-5 hover:shadow-lg transition-shadow cursor-pointer"
+                onClick={() => alert("게시글 상세 페이지는 준비 중입니다.")}
               >
-                {/* 메타 정보 */}
-                <div className="flex items-center gap-3 text-xs text-[#6B6B6B]">
-                  <span className="font-medium text-[#4A4A4A] dark:text-foreground">
-                    {post.author}
-                  </span>
-                  <span className="text-[#1B9AAA]">{post.city}</span>
-                  <span>{post.date}</span>
-                </div>
-                {/* 액션 버튼 */}
-                <div className="flex items-center gap-4 shrink-0">
-                  <button
-                    onClick={() => handleLike(post.id)}
-                    className={`flex items-center gap-1 transition-colors ${
-                      likedIds.has(post.id) ? "text-[#FF6B35]" : "text-[#6B6B6B] hover:text-[#FF6B35]"
-                    }`}
+                {/* 카테고리 배지 + 제목 */}
+                <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                  <span
+                    className={`text-xs font-medium px-2 py-0.5 rounded-full ${CATEGORY_COLOR[post.category as PostCategory]}`}
                   >
-                    <ThumbsUp className="w-4 h-4" fill={likedIds.has(post.id) ? "currentColor" : "none"} />
-                    <span className="text-xs">{post.likes}</span>
-                  </button>
-                  <div className="flex items-center gap-1 text-[#6B6B6B]">
-                    <MessageCircle className="w-4 h-4" />
-                    <span className="text-xs">{post.comments}</span>
+                    {post.category}
+                  </span>
+                  <h2 className="text-[#4A4A4A] dark:text-foreground font-semibold text-sm sm:text-base line-clamp-1">
+                    {post.title}
+                  </h2>
+                </div>
+                {/* 본문 미리보기 */}
+                <p className="text-[#6B6B6B] text-sm line-clamp-2 mb-3">{post.content}</p>
+                {/* 하단 footer: 메타 정보 + 액션 버튼 */}
+                <div
+                  className="flex items-center justify-between border-t border-[#1B9AAA]/10 pt-3 mt-1"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* 메타 정보 */}
+                  <div className="flex items-center gap-3 text-xs text-[#6B6B6B]">
+                    <span className="font-medium text-[#4A4A4A] dark:text-foreground">
+                      {post.author}
+                    </span>
+                    <span className="text-[#1B9AAA]">{post.city}</span>
+                    <span>{post.date}</span>
+                  </div>
+                  {/* 액션 버튼 */}
+                  <div className="flex items-center gap-4 shrink-0">
+                    <button
+                      onClick={() => handleLike(post.id)}
+                      className={`flex items-center gap-1 transition-colors ${
+                        likedIds.has(post.id) ? "text-[#FF6B35]" : "text-[#6B6B6B] hover:text-[#FF6B35]"
+                      }`}
+                    >
+                      <ThumbsUp className="w-4 h-4" fill={likedIds.has(post.id) ? "currentColor" : "none"} />
+                      <span className="text-xs">{post.likes}</span>
+                    </button>
+                    <div className="flex items-center gap-1 text-[#6B6B6B]">
+                      <MessageCircle className="w-4 h-4" />
+                      <span className="text-xs">{post.comments}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </article>
-          ))}
-        </div>
+              </article>
+            ))}
 
-        {filtered.length === 0 && (
-          <div className="text-center py-20 text-[#6B6B6B]">
-            <p className="text-4xl mb-3">📭</p>
-            <p className="font-medium">게시글이 없습니다</p>
+            {filtered.length === 0 && (
+              <div className="text-center py-20 text-[#6B6B6B]">
+                <p className="text-4xl mb-3">📭</p>
+                <p className="font-medium">게시글이 없습니다</p>
+              </div>
+            )}
           </div>
         )}
       </main>

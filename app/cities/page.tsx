@@ -1,8 +1,10 @@
-import { cities } from "@/lib/mock-data";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { CityCard } from "@/components/cards/city-card";
 import { CityFilters } from "./_components/city-filters";
+import { createClient } from "@/lib/supabase/server";
+import { rowToCity } from "@/lib/supabase/mappers";
+import type { City } from "@/lib/mock-data";
 
 type SearchParams = {
   q?: string;
@@ -10,7 +12,7 @@ type SearchParams = {
   tag?: string;
 };
 
-function getFilteredCities(params: SearchParams) {
+function applyFilters(cities: City[], params: SearchParams): City[] {
   let result = [...cities];
 
   if (params.q) {
@@ -53,7 +55,11 @@ export default async function CitiesPage({
   searchParams: Promise<SearchParams>;
 }) {
   const params = await searchParams;
-  const filteredCities = getFilteredCities(params);
+  const supabase = await createClient();
+
+  const { data } = await supabase.from("cities").select("*").order("rank");
+  const cities = (data ?? []).map(rowToCity);
+  const filteredCities = applyFilters(cities, params);
 
   return (
     <div className="min-h-screen flex flex-col">

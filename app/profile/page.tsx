@@ -2,9 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "@/providers/auth-provider";
 import { useFavorites } from "@/providers/favorites-provider";
-import { reviews, cities, coworkingSpaces } from "@/lib/mock-data";
+import { createClient } from "@/lib/supabase/client";
+import { rowToReview, rowToCity, rowToCoworkingSpace } from "@/lib/supabase/mappers";
+import type { Review, City, CoworkingSpace } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Navbar } from "@/components/layout/navbar";
@@ -12,7 +15,6 @@ import { Footer } from "@/components/layout/footer";
 import { CityCard } from "@/components/cards/city-card";
 import { CoworkingCard } from "@/components/cards/coworking-card";
 import { EmptyState } from "@/components/ui/empty-state";
-import Link from "next/link";
 
 const CITIES = ["서울", "부산", "제주", "대구", "인천", "광주", "대전"];
 
@@ -27,17 +29,42 @@ export default function ProfilePage() {
   const [favoriteCity, setFavoriteCity] = useState("");
   const [activeTab, setActiveTab] = useState<ProfileTab>("reviews");
 
+  const [myReviews, setMyReviews] = useState<Review[]>([]);
+  const [favCities, setFavCities] = useState<City[]>([]);
+  const [favCoworkings, setFavCoworkings] = useState<CoworkingSpace[]>([]);
+
   useEffect(() => {
     if (!user) {
       router.push("/login");
+      return;
     }
-  }, [user, router]);
+
+    const supabase = createClient();
+
+    async function loadData() {
+      const [{ data: reviewRows }, { data: cityRows }, { data: cwRows }] = await Promise.all([
+        supabase.from("reviews").select("*").eq("nickname", user!.nickname),
+        supabase.from("cities").select("*"),
+        supabase.from("coworking_spaces").select("*"),
+      ]);
+
+      setMyReviews((reviewRows ?? []).map(rowToReview));
+      setFavCities(
+        (cityRows ?? [])
+          .filter((c) => favorites.includes(c.id))
+          .map(rowToCity)
+      );
+      setFavCoworkings(
+        (cwRows ?? [])
+          .filter((s) => favorites.includes(s.id))
+          .map(rowToCoworkingSpace)
+      );
+    }
+
+    loadData();
+  }, [user, router, favorites]);
 
   if (!user) return null;
-
-  const myReviews = reviews.filter((r) => r.nickname === user.nickname);
-  const favCities = cities.filter((c) => favorites.includes(c.id));
-  const favCoworkings = coworkingSpaces.filter((s) => favorites.includes(s.id));
 
   function handleEdit() {
     setNickname(user!.nickname);
@@ -45,8 +72,8 @@ export default function ProfilePage() {
     setEditing(true);
   }
 
-  function handleSave() {
-    updateUser({ nickname: nickname.trim() || user!.nickname, favoriteCity: favoriteCity || undefined });
+  async function handleSave() {
+    await updateUser({ nickname: nickname.trim() || user!.nickname, favoriteCity: favoriteCity || undefined });
     setEditing(false);
   }
 

@@ -1,13 +1,16 @@
 import { Suspense } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
-import { meetups } from "@/lib/mock-data";
 import { MeetupFilters } from "./_components/meetup-filters";
+import { createClient } from "@/lib/supabase/server";
+import { rowToMeetup } from "@/lib/supabase/mappers";
 
-// 이번 주 밋업: 날짜 순 상위 3개
-const highlightMeetups = meetups.slice(0, 3);
+export default async function MeetupsPage() {
+  const supabase = await createClient();
+  const { data } = await supabase.from("meetups").select("*").order("id");
+  const meetups = (data ?? []).map(rowToMeetup);
+  const highlightMeetups = meetups.slice(0, 3);
 
-export default function MeetupsPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />

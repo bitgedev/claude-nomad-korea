@@ -5,7 +5,8 @@ import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Badge } from "@/components/ui/badge";
 import { MeetupCard } from "@/components/cards/meetup-card";
 import { RsvpButton } from "./_components/rsvp-button";
-import { meetups } from "@/lib/mock-data";
+import { createClient } from "@/lib/supabase/server";
+import { rowToMeetup } from "@/lib/supabase/mappers";
 import { Calendar, MapPin, User } from "lucide-react";
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -21,13 +22,33 @@ interface Props {
 
 export default async function MeetupDetailPage({ params }: Props) {
   const { id } = await params;
-  const meetup = meetups.find((m) => m.id === id);
+  const supabase = await createClient();
 
-  if (!meetup) notFound();
+  const [{ data: meetupRow }, { data: relatedRows }, { data: { user } }] = await Promise.all([
+    supabase.from("meetups").select("*").eq("id", id).single(),
+    supabase.from("meetups").select("*").neq("id", id),
+    supabase.auth.getUser(),
+  ]);
 
-  const related = meetups
-    .filter((m) => m.id !== meetup.id && m.city === meetup.city)
-    .slice(0, 3);
+  if (!meetupRow) notFound();
+
+  const meetup = rowToMeetup(meetupRow);
+  const related = (relatedRows ?? [])
+    .filter((m) => m.city === meetupRow.city)
+    .slice(0, 3)
+    .map(rowToMeetup);
+
+  // Check if current user has RSVPed
+  let hasRsvped = false;
+  if (user) {
+    const { data: rsvpRow } = await supabase
+      .from("meetup_rsvps")
+      .select("user_id")
+      .eq("meetup_id", id)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    hasRsvped = !!rsvpRow;
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -107,7 +128,13 @@ export default async function MeetupDetailPage({ params }: Props) {
           <div className="lg:col-span-1">
             <div className="bg-white dark:bg-card border border-[#1B9AAA]/15 rounded-2xl p-6 sticky top-24">
               <h2 className="font-semibold text-[#4A4A4A] dark:text-foreground mb-4">참가 신청</h2>
-              <RsvpButton initialRsvp={meetup.rsvp} maxAttendees={meetup.maxAttendees} />
+              <RsvpButton
+                meetupId={id}
+                initialRsvp={meetup.rsvp}
+                maxAttendees={meetup.maxAttendees}
+                initialHasRsvped={hasRsvped}
+                isLoggedIn={!!user}
+              />
             </div>
           </div>
         </div>

@@ -1,10 +1,12 @@
 import Link from "next/link";
-import { coworkingSpaces } from "@/lib/mock-data";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { CoworkingCard } from "@/components/cards/coworking-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { CoworkingFilters } from "./_components/coworking-filters";
+import { createClient } from "@/lib/supabase/server";
+import { rowToCoworkingSpace } from "@/lib/supabase/mappers";
+import type { CoworkingSpace } from "@/lib/mock-data";
 
 type SearchParams = {
   city?: string;
@@ -12,8 +14,8 @@ type SearchParams = {
   amenity?: string;
 };
 
-function getFilteredSpaces(params: SearchParams) {
-  let result = [...coworkingSpaces];
+function applyFilters(spaces: CoworkingSpace[], params: SearchParams): CoworkingSpace[] {
+  let result = [...spaces];
 
   if (params.city) {
     result = result.filter((s) => s.city === params.city);
@@ -34,14 +36,12 @@ function getFilteredSpaces(params: SearchParams) {
   }
 
   if (params.amenity) {
-    const amenityMap: Record<string, string> = {
-      와이파이: "wifi",
-    };
     if (params.amenity === "와이파이") {
       result = result.filter((s) => s.wifi);
     } else {
-      const target = amenityMap[params.amenity] ?? params.amenity;
-      result = result.filter((s) => s.amenities.includes(target) || s.amenities.includes(params.amenity!));
+      result = result.filter(
+        (s) => s.amenities.includes(params.amenity!)
+      );
     }
   }
 
@@ -54,7 +54,11 @@ export default async function CoworkingPage({
   searchParams: Promise<SearchParams>;
 }) {
   const params = await searchParams;
-  const filtered = getFilteredSpaces(params);
+  const supabase = await createClient();
+
+  const { data } = await supabase.from("coworking_spaces").select("*").order("name");
+  const allSpaces = (data ?? []).map(rowToCoworkingSpace);
+  const filtered = applyFilters(allSpaces, params);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -66,7 +70,7 @@ export default async function CoworkingPage({
               💻 코워킹 스페이스
             </h1>
             <p className="text-[#6B6B6B]">
-              전국 코워킹 스페이스 {coworkingSpaces.length}곳을 탐색하세요
+              전국 코워킹 스페이스 {allSpaces.length}곳을 탐색하세요
             </p>
           </div>
 

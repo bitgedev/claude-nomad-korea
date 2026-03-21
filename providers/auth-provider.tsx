@@ -1,8 +1,10 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
+import type { User } from "@supabase/supabase-js";
 
-export type MockUser = {
+export type AuthUser = {
   id: string;
   email: string;
   nickname: string;
@@ -11,80 +13,102 @@ export type MockUser = {
 };
 
 type AuthContextType = {
-  user: MockUser | null;
+  user: AuthUser | null;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string, nickname: string) => Promise<void>;
-  logout: () => void;
-  updateUser: (updates: Partial<Pick<MockUser, "nickname" | "favoriteCity">>) => void;
+  logout: () => Promise<void>;
+  updateUser: (updates: Partial<Pick<AuthUser, "nickname" | "favoriteCity">>) => Promise<void>;
 };
-
-const STORAGE_KEY = "nomad_korea_user";
-const MOCK_TAKEN_NICKNAMES = ["admin", "nomad", "테스터", "관리자"];
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+function toAuthUser(supabaseUser: User, profile: { nickname: string; favorite_city: string | null; created_at: string | null }): AuthUser {
+  return {
+    id: supabaseUser.id,
+    email: supabaseUser.email ?? "",
+    nickname: profile.nickname,
+    joinedAt: profile.created_at ?? supabaseUser.created_at,
+    favoriteCity: profile.favorite_city ?? undefined,
+  };
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<MockUser | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const supabase = createClient();
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) setUser(JSON.parse(stored) as MockUser);
-    } catch {
-      // ignore
-    }
+    // 초기 세션 확인
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session?.user) {
+        await loadProfile(session.user);
+      }
+    });
+
+    // 세션 변경 감지
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        await loadProfile(session.user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const persist = (u: MockUser | null) => {
-    if (u) localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
-    else localStorage.removeItem(STORAGE_KEY);
-    setUser(u);
-  };
+  async function loadProfile(supabaseUser: User) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("nickname, favorite_city, created_at")
+      .eq("id", supabaseUser.id)
+      .single();
+
+    if (profile) {
+      setUser(toAuthUser(supabaseUser, profile));
+    }
+  }
 
   const login = async (email: string, password: string) => {
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      throw new Error("올바른 이메일 형식이 아닙니다.");
-    }
-    if (password.length < 6) {
-      throw new Error("비밀번호는 6자 이상이어야 합니다.");
-    }
-    const newUser: MockUser = {
-      id: `user_${Date.now()}`,
-      email,
-      nickname: email.split("@")[0],
-      joinedAt: new Date().toISOString(),
-    };
-    persist(newUser);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw new Error(error.message);
   };
 
   const signup = async (email: string, password: string, nickname: string) => {
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      throw new Error("올바른 이메일 형식이 아닙니다.");
-    }
-    if (password.length < 6) {
-      throw new Error("비밀번호는 6자 이상이어야 합니다.");
-    }
-    if (MOCK_TAKEN_NICKNAMES.includes(nickname)) {
-      throw new Error("이미 사용 중인 닉네임입니다.");
-    }
-    if (nickname.trim().length < 2) {
-      throw new Error("닉네임은 2자 이상이어야 합니다.");
-    }
-    const newUser: MockUser = {
-      id: `user_${Date.now()}`,
+    const { data, error } = await supabase.auth.signUp({
       email,
-      nickname,
-      joinedAt: new Date().toISOString(),
-    };
-    persist(newUser);
+      password,
+      options: { data: { nickname } },
+    });
+    if (error) throw new Error(error.message);
+
+    // trigger가 profiles를 자동 생성하지만, 닉네임이 올바르게 저장됐는지 확인 후 필요 시 upsert
+    if (data.user) {
+      await supabase
+        .from("profiles")
+        .upsert({ id: data.user.id, nickname }, { onConflict: "id" });
+    }
   };
 
-  const logout = () => persist(null);
+  const logout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+  };
 
-  const updateUser = (updates: Partial<Pick<MockUser, "nickname" | "favoriteCity">>) => {
+  const updateUser = async (updates: Partial<Pick<AuthUser, "nickname" | "favoriteCity">>) => {
     if (!user) return;
-    const updated = { ...user, ...updates };
-    persist(updated);
+    const patch: Record<string, string> = {};
+    if (updates.nickname) patch.nickname = updates.nickname;
+    if (updates.favoriteCity !== undefined) patch.favorite_city = updates.favoriteCity ?? "";
+
+    const { error } = await supabase
+      .from("profiles")
+      .update(patch)
+      .eq("id", user.id);
+
+    if (!error) {
+      setUser({ ...user, ...updates });
+    }
   };
 
   return (

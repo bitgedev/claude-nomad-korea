@@ -1,27 +1,80 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Users } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 interface RsvpButtonProps {
+  meetupId: string;
   initialRsvp: number;
   maxAttendees: number;
+  initialHasRsvped: boolean;
+  isLoggedIn: boolean;
 }
 
-export function RsvpButton({ initialRsvp, maxAttendees }: RsvpButtonProps) {
+export function RsvpButton({
+  meetupId,
+  initialRsvp,
+  maxAttendees,
+  initialHasRsvped,
+  isLoggedIn,
+}: RsvpButtonProps) {
+  const router = useRouter();
   const [rsvp, setRsvp] = useState(initialRsvp);
-  const [joined, setJoined] = useState(false);
+  const [joined, setJoined] = useState(initialHasRsvped);
+  const [loading, setLoading] = useState(false);
 
   const isFull = !joined && rsvp >= maxAttendees;
 
-  function handleToggle() {
-    if (isFull) return;
-    if (joined) {
-      setRsvp((prev) => prev - 1);
-    } else {
-      setRsvp((prev) => prev + 1);
+  async function handleToggle() {
+    if (isFull || loading) return;
+
+    if (!isLoggedIn) {
+      router.push("/login");
+      return;
     }
-    setJoined((prev) => !prev);
+
+    setLoading(true);
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      router.push("/login");
+      setLoading(false);
+      return;
+    }
+
+    if (joined) {
+      // 참가 취소
+      await supabase
+        .from("meetup_rsvps")
+        .delete()
+        .eq("meetup_id", meetupId)
+        .eq("user_id", user.id);
+
+      await supabase
+        .from("meetups")
+        .update({ rsvp_count: rsvp - 1 })
+        .eq("id", meetupId);
+
+      setRsvp((prev) => prev - 1);
+      setJoined(false);
+    } else {
+      // 참가 신청
+      await supabase
+        .from("meetup_rsvps")
+        .insert({ meetup_id: meetupId, user_id: user.id });
+
+      await supabase
+        .from("meetups")
+        .update({ rsvp_count: rsvp + 1 })
+        .eq("id", meetupId);
+
+      setRsvp((prev) => prev + 1);
+      setJoined(true);
+    }
+
+    setLoading(false);
   }
 
   return (
@@ -51,7 +104,7 @@ export function RsvpButton({ initialRsvp, maxAttendees }: RsvpButtonProps) {
       {/* RSVP 버튼 */}
       <button
         onClick={handleToggle}
-        disabled={isFull}
+        disabled={isFull || loading}
         className={`w-full py-3 rounded-xl font-semibold text-sm transition-all ${
           isFull
             ? "bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-muted dark:text-muted-foreground"
@@ -60,7 +113,15 @@ export function RsvpButton({ initialRsvp, maxAttendees }: RsvpButtonProps) {
             : "bg-[#1B9AAA] text-white hover:bg-[#1B9AAA]/90"
         }`}
       >
-        {isFull ? "정원 마감" : joined ? "참가 취소하기" : "참가 신청하기"}
+        {loading
+          ? "처리 중..."
+          : isFull
+          ? "정원 마감"
+          : joined
+          ? "참가 취소하기"
+          : isLoggedIn
+          ? "참가 신청하기"
+          : "로그인 후 참가 신청"}
       </button>
 
       {joined && (

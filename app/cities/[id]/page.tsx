@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
-import { cities, reviews, coworkingSpaces } from "@/lib/mock-data";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { CityTabs } from "./_components/city-tabs";
 import { Wifi, DollarSign, Building2, Star } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import { rowToCity, rowToReview, rowToCoworkingSpace } from "@/lib/supabase/mappers";
 
 const badgeVariants: Record<string, string> = {
   "인기 1위": "bg-[#1B9AAA]/10 text-[#1B9AAA] border border-[#1B9AAA]/20",
@@ -18,16 +19,29 @@ export default async function CityDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const city = cities.find((c) => c.id === id);
+  const supabase = await createClient();
 
-  if (!city) {
-    notFound();
-  }
+  const [{ data: cityRow }, { data: reviewRows }, { data: coworkingRows }] = await Promise.all([
+    supabase.from("cities").select("*").eq("id", id).single(),
+    supabase.from("reviews").select("*").eq("city_name", id),
+    supabase.from("coworking_spaces").select("*"),
+  ]);
 
-  const cityReviews = reviews.filter((r) => r.cityName === city.name);
-  const cityCoworkingSpaces = coworkingSpaces.filter(
-    (s) => s.city === city.name
-  );
+  if (!cityRow) notFound();
+
+  const city = rowToCity(cityRow);
+
+  // reviews are filtered by city_name which stores the Korean name
+  // re-fetch with correct city name
+  const { data: cityReviewRows } = await supabase
+    .from("reviews")
+    .select("*")
+    .eq("city_name", city.name);
+
+  const cityReviews = (cityReviewRows ?? []).map(rowToReview);
+  const cityCoworkingSpaces = (coworkingRows ?? [])
+    .filter((s) => s.city === city.name)
+    .map(rowToCoworkingSpace);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -60,8 +74,7 @@ export default async function CityDetailPage({
                 <div className="flex flex-wrap items-center gap-2 mt-2">
                   <span
                     className={`text-xs font-medium px-2.5 py-1 rounded-full ${
-                      badgeVariants[city.badge] ??
-                      "bg-[#FAF7F2] text-[#6B6B6B]"
+                      badgeVariants[city.badge] ?? "bg-[#FAF7F2] text-[#6B6B6B]"
                     }`}
                   >
                     {city.badge}

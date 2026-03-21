@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import { MapPin, Star, Wifi, Check, Clock } from "lucide-react";
-import { coworkingSpaces, reviews } from "@/lib/mock-data";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { ReviewCard } from "@/components/cards/review-card";
 import { BookingButton } from "./_components/booking-button";
+import { createClient } from "@/lib/supabase/server";
+import { rowToCoworkingSpace, rowToReview } from "@/lib/supabase/mappers";
 
 export default async function CoworkingDetailPage({
   params,
@@ -13,10 +14,17 @@ export default async function CoworkingDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const space = coworkingSpaces.find((s) => s.id === id);
-  if (!space) notFound();
+  const supabase = await createClient();
 
-  const spaceReviews = reviews.filter((r) => r.coworkingId === space.id);
+  const [{ data: spaceRow }, { data: reviewRows }] = await Promise.all([
+    supabase.from("coworking_spaces").select("*").eq("id", id).single(),
+    supabase.from("reviews").select("*").eq("coworking_id", id),
+  ]);
+
+  if (!spaceRow) notFound();
+
+  const space = rowToCoworkingSpace(spaceRow);
+  const spaceReviews = (reviewRows ?? []).map(rowToReview);
 
   const weeklyPrice = Math.round(space.pricePerDay * 5.5);
   const monthlyPrice = Math.round(space.pricePerDay * 20);

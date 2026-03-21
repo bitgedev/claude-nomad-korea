@@ -1,29 +1,23 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { cities } from "@/lib/mock-data";
+import { createClient } from "@/lib/supabase/client";
+import { rowToReview } from "@/lib/supabase/mappers";
 import type { Review } from "@/lib/mock-data";
 
-type ReviewFormProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSubmit: (review: Review) => void;
-};
+const CITY_NAMES = ["서울", "부산", "제주", "대구", "인천", "광주", "대전"];
 
-const CITY_NAMES = cities.map((c) => c.name);
-
-// 모듈 레벨 카운터 — 렌더 외부에서 고유 값 생성
 let _nicknameSeq = 1000;
 function nextNickname() {
   _nicknameSeq += 1;
   return `익명_${_nicknameSeq}`;
 }
 
-let _reviewSeq = 0;
-function nextReviewId() {
-  _reviewSeq += 1;
-  return `user-${_reviewSeq}`;
-}
+type ReviewFormProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSubmit: (review: Review) => void;
+};
 
 function InteractiveStars({
   value,
@@ -61,6 +55,7 @@ export function ReviewForm({ open, onOpenChange, onSubmit }: ReviewFormProps) {
   const [content, setContent] = useState("");
   const [hashtags, setHashtags] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
 
   function validate() {
@@ -72,29 +67,45 @@ export function ReviewForm({ open, onOpenChange, onSubmit }: ReviewFormProps) {
     return Object.keys(next).length === 0;
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!validate()) return;
+    if (!validate() || submitting) return;
 
-    const review: Review = {
-      id: nextReviewId(),
-      cityName: city,
-      nickname: nickname.trim() || nickname,
-      rating,
-      date: new Date().toLocaleDateString("ko-KR", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-      content: content.trim(),
-      hashtags: hashtags
-        .split(",")
-        .map((t) => t.trim())
-        .filter(Boolean)
-        .map((t) => (t.startsWith("#") ? t : `#${t}`)),
-    };
+    setSubmitting(true);
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
 
-    onSubmit(review);
+    const hashtagList = hashtags
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean)
+      .map((t) => (t.startsWith("#") ? t : `#${t}`));
+
+    const reviewId = `user-${Date.now()}`;
+    const { data: savedRow } = await supabase
+      .from("reviews")
+      .insert({
+        id: reviewId,
+        city_name: city,
+        user_id: user?.id ?? null,
+        nickname: nickname.trim() || nickname,
+        rating,
+        content: content.trim(),
+        hashtags: hashtagList,
+        date: new Date().toLocaleDateString("ko-KR", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
+      })
+      .select()
+      .single();
+
+    if (savedRow) {
+      onSubmit(rowToReview(savedRow));
+    }
+
+    setSubmitting(false);
     handleClose();
   }
 
@@ -128,10 +139,6 @@ export function ReviewForm({ open, onOpenChange, onSubmit }: ReviewFormProps) {
             ✕
           </button>
         </div>
-
-        <p className="text-xs text-[#6B6B6B] bg-[#FAF7F2] dark:bg-muted rounded-xl px-3 py-2">
-          임시 저장 (새로고침 시 초기화됩니다)
-        </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {/* 닉네임 */}
@@ -221,9 +228,10 @@ export function ReviewForm({ open, onOpenChange, onSubmit }: ReviewFormProps) {
 
           <button
             type="submit"
-            className="mt-1 bg-[#1B9AAA] hover:bg-[#1B9AAA]/90 text-white font-semibold rounded-xl py-2.5 transition-colors"
+            disabled={submitting}
+            className="mt-1 bg-[#1B9AAA] hover:bg-[#1B9AAA]/90 disabled:opacity-60 text-white font-semibold rounded-xl py-2.5 transition-colors"
           >
-            리뷰 등록
+            {submitting ? "저장 중..." : "리뷰 등록"}
           </button>
         </form>
       </div>
