@@ -35,7 +35,7 @@ export function CtaBanner() {
           <Button
             size="lg"
             variant="outline"
-            className="border-white/50 text-white hover:bg-white/10 hover:text-white px-8 h-12 text-base rounded-full"
+            className="bg-transparent border-white/50 text-white hover:bg-white/10 hover:text-white px-8 h-12 text-base rounded-full"
           >
             더 알아보기
           </Button>
