@@ -20,9 +20,7 @@ export function CtaBanner() {
             <br />
             나만의 노마드 여정을 기록해보세요
           </h2>
-          <p className="text-white/80 text-lg">
-            무료로 시작하세요. 신용카드 불필요.
-          </p>
+          <p className="text-white/80 text-lg">무료로 시작하세요.</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3">
           <Button
@@ -41,8 +39,8 @@ export function CtaBanner() {
           </Button>
         </div>
         <p className="text-white/70 text-sm">
-          이미{" "}
-          <span className="font-semibold text-white">3,800+</span>명의 노마드가 함께하고 있어요
+          이미 <span className="font-semibold text-white">3,800+</span>명의
+          노마드가 함께하고 있어요
         </p>
       </div>
     </section>
