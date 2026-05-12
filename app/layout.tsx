@@ -17,9 +17,31 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Nomad Korea — 한국 디지털 노마드 정보 플랫폼",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
+  ),
+  title: {
+    default: "Nomad Korea — 한국 디지털 노마드 정보 플랫폼",
+    template: "%s | Nomad Korea",
+  },
   description:
     "실제 노마드들의 리뷰와 데이터로 최적의 한국 거점 도시를 찾아보세요. 코워킹 스페이스, 밋업, 생활비 정보를 한 곳에서.",
+  openGraph: {
+    type: "website",
+    locale: "ko_KR",
+    siteName: "Nomad Korea",
+    title: "Nomad Korea — 한국 디지털 노마드 정보 플랫폼",
+    description:
+      "실제 노마드들의 리뷰와 데이터로 최적의 한국 거점 도시를 찾아보세요. 코워킹 스페이스, 밋업, 생활비 정보를 한 곳에서.",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Nomad Korea — 한국 디지털 노마드 정보 플랫폼",
+    description:
+      "실제 노마드들의 리뷰와 데이터로 최적의 한국 거점 도시를 찾아보세요. 코워킹 스페이스, 밋업, 생활비 정보를 한 곳에서.",
+    images: ["/opengraph-image"],
+  },
 };
 
 export default function RootLayout({
